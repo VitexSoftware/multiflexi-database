@@ -3,6 +3,8 @@ set -e
 
 case "$1" in
     install|upgrade)
+        mkdir -p /etc/multiflexi
+        chown multiflexi:multiflexi /etc/multiflexi
     ;;
 
     abort-upgrade)

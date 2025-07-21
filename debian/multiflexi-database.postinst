@@ -27,8 +27,6 @@ case "$1" in
 
             dbc_go multiflexi "$@"
 
-            mkdir -p /etc/multiflexi
-
             if [ -f /etc/multiflexi/database.env ]; then
                 # Preserve original keys in multiflexi.env, overwrite/replace only those from database.env
                 tmpfile=$(mktemp)
