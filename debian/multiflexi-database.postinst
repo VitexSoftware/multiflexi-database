@@ -18,14 +18,19 @@ case "$1" in
             . /usr/share/dbconfig-common/dpkg/postinst
             dbc_generate_include_args="-U -o template_infile=/usr/lib/multiflexi-database/.env.template"
             dbc_generate_include=template:/etc/multiflexi/database.env
-            dbc_generate_include_owner="multiflexi:multiflexi"
+            dbc_generate_include_owner="root:root"
             dbc_generate_include_perms="664"
-            dbc_dbfile_owner="multiflexi:multiflexi"
+            dbc_dbfile_owner="root:root"
             dbc_dbfile_perms="0664"
             dbc_dbuser=multiflexi
             dbc_dbname=multiflexi
 
             dbc_go multiflexi "$@"
+
+            #echo "############################ /etc/multiflexi/database.env"
+            cat /etc/multiflexi/database.env
+            #echo "############################"
+
 
             if [ -f /etc/multiflexi/database.env ]; then
                 # Preserve original keys in multiflexi.env, overwrite/replace only those from database.env
@@ -38,12 +43,12 @@ case "$1" in
                     echo "$key=$val" >> "$tmpfile"
                 done
                 mv "$tmpfile" /etc/multiflexi/multiflexi.env
-                chown multiflexi:multiflexi /etc/multiflexi/multiflexi.env
+                chown root:root /etc/multiflexi/multiflexi.env
                 chmod 664 /etc/multiflexi/multiflexi.env
             fi
 
 
-            #echo "############################"
+            #echo "############################ /etc/multiflexi/multiflexi.env"
             cat /etc/multiflexi/multiflexi.env
             #echo "############################"
 
