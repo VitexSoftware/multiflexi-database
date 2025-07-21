@@ -100,6 +100,9 @@ $config->getFinder()
     ->append([
         __DIR__.'/phinx-adapter.php',
     ])
+    ->append([
+        __DIR__.'/debian/conf/phinx-adapter.php',
+    ])
     ->in('db');
 
 $config->setCacheFile(__DIR__.'/.build/php-cs-fixer/.php-cs-fixer.cache');

@@ -7,3 +7,13 @@ composer.phar
 .build/php-cs-fixer/.php-cs-fixer.cache
 db/multiflexi.sqlite
 .env
+debian/debhelper-build-stamp
+debian/multiflexi-database.substvars
+debian/multiflexi-mysql.substvars
+debian/multiflexi-sqlite.substvars
+debian/.debhelper/
+debian/multiflexi-database/
+debian/multiflexi-mysql/
+debian/multiflexi-sqlite/
+debian/multiflexi-pgsql/
+

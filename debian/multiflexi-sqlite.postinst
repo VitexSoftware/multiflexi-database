@@ -1,0 +1,8 @@
+#!/bin/sh
+set -e
+# Postinst script for multiflexi-sqlite
+# Nastaví konfiguraci pro SQLite
+if [ -d /etc/multiflexi ]; then
+    
+fi
+exit 0

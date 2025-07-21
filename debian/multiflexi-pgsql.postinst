@@ -1,0 +1,8 @@
+#!/bin/sh
+set -e
+# Postinst script for multiflexi-pgsql
+# Nastaví konfiguraci pro PostgreSQL
+if [ -d /etc/multiflexi ]; then
+    cp /usr/share/multiflexi-database/conf/pgsql.conf /etc/multiflexi/database.conf
+fi
+exit 0

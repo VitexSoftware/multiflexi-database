@@ -1,0 +1,3 @@
+#!/bin/bash
+
+phinx migrate -c /usr/lib/multiflexi-database/phinx-adapter.php

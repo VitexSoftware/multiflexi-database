@@ -1,0 +1,2 @@
+db/migrations/*         /usr/lib/multiflexi-database/migrations
+conf/phinx-adapter.php  /usr/lib/multiflexi-database/
