@@ -31,6 +31,7 @@ set -e
             dbc_go multiflexi "$@"
 
 
+            multiflexi-migrator
 
 
 # Uncomment the following lines if you want to set different permissions

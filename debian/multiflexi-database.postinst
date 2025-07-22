@@ -12,7 +12,6 @@ composer-debian multiflexi-database
 
 case "$1" in
     configure)
-            multiflexi-migrator
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)

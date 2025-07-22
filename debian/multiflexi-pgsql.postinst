@@ -36,6 +36,7 @@ dbc_sql_substitutions="yes"
 
             dbc_go multiflexi "$@"
 
+            multiflexi-migrator
 
 
 #DEBHELPER#

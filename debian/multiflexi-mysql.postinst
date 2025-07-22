@@ -34,6 +34,7 @@ dbc_mysql_createdb_encoding="UTF8"
             dbc_go multiflexi "$@"
 
 
+            multiflexi-migrator
 
 
 
