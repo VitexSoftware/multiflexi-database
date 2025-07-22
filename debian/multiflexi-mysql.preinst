@@ -53,18 +53,6 @@ case "$1" in
                 adduser $SERVER_USER $ADDGROUP
             fi
         fi
-
-        # Ensure /etc/multiflexi exists
-        mkdir -p /etc/multiflexi
-        # Create /etc/multiflexi/database.env from template if it does not exist
-        if [ ! -f /etc/multiflexi/database.env ]; then
-            cp /usr/lib/multiflexi-database/.env.template /etc/multiflexi/database.env
-            chown root:root /etc/multiflexi/database.env
-            chmod 664 /etc/multiflexi/database.env
-        fi
-
-
-
     ;;
 
     abort-upgrade)
