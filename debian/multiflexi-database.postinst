@@ -29,15 +29,15 @@ case "$1" in
             # Nastav výchozí hodnoty, pokud nejsou v debconf
             db_get multiflexi/db/app-user || true
             if [ -z "$RET" ] || echo "$RET" | grep -q "doesn't exist"; then
-                dbc_dbuser=multiflexi
+                export dbc_dbuser=multiflexi
             else
-                dbc_dbuser="$RET"
+                export dbc_dbuser="$RET"
             fi
             db_get multiflexi/db/dbname || true
             if [ -z "$RET" ] || echo "$RET" | grep -q "doesn't exist"; then
-                dbc_dbname=multiflexi
+                export dbc_dbname=multiflexi
             else
-                dbc_dbname="$RET"
+                export dbc_dbname="$RET"
             fi
 
             dbc_go multiflexi "$@"
