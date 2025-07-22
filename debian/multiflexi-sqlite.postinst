@@ -30,28 +30,6 @@ set -e
 
             dbc_go multiflexi "$@"
 
-            #echo "############################ /etc/multiflexi/database.env"
-            [ -f /etc/multiflexi/database.env ] && cat /etc/multiflexi/database.env
-            #echo "############################"
-
-            if [ -f /etc/multiflexi/database.env ]; then
-                # Preserve original keys in multiflexi.env, overwrite/replace only those from database.env
-                tmpfile=$(mktemp)
-                cp /etc/multiflexi/multiflexi.env "$tmpfile" 2>/dev/null || touch "$tmpfile"
-                grep -v '^[[:space:]]*$' /etc/multiflexi/database.env | grep -v '^[[:space:]]*#' | while IFS='=' read -r key val; do
-                    # Remove existing key from multiflexi.env
-                    sed -i "/^$key=/d" "$tmpfile"
-                    # Add/replace key from database.env
-                    echo "$key=$val" >> "$tmpfile"
-                done
-                mv "$tmpfile" /etc/multiflexi/multiflexi.env
-                chown root:root /etc/multiflexi/multiflexi.env
-                chmod 664 /etc/multiflexi/multiflexi.env
-            fi
-
-            #echo "############################ /etc/multiflexi/multiflexi.env"
-            [ -f /etc/multiflexi/multiflexi.env ] && cat /etc/multiflexi/multiflexi.env
-            #echo "############################"
 
 
 
