@@ -11,13 +11,4 @@ if [ -f /usr/share/dbconfig-common/dpkg/postrm.mysql ]; then
     dbc_go multiflexi "$@"
 fi
 
-
-if [ "$1" = "purge" ]; then
-	rm -f /etc/multiflexi/database.env
-	if command -v ucf >/dev/null; then
-		ucf --purge /etc/multiflexi/database.env
-		ucfr --purge multiflexi /etc/multiflexi/database.env
-	fi
-fi
-
 #DEBHELPER#

@@ -1,8 +1,63 @@
 #!/bin/sh
+
 set -e
-# Postinst script for multiflexi-sqlite
-# Nastaví konfiguraci pro SQLite
-if [ -d /etc/multiflexi ]; then
-    
-fi
-exit 0
+#set -x
+
+. /usr/share/debconf/confmodule
+. /usr/share/dbconfig-common/dpkg/postinst.sqlite3 
+
+
+            dbc_generate_include_args="-U -o template_infile=/usr/lib/multiflexi-database/.env.template"
+            dbc_generate_include=template:/etc/multiflexi/database.env
+            dbc_generate_include_owner="root:root"
+            dbc_generate_include_perms="664"
+            dbc_dbfile_owner="root:root"
+            dbc_dbfile_perms="0664"
+
+            # Nastav výchozí hodnoty, pokud nejsou v debconf
+            db_get multiflexi/db/app-user || true
+            if [ -z "$RET" ] || echo "$RET" | grep -q "doesn't exist"; then
+                export dbc_dbuser=multiflexi
+            else
+                export dbc_dbuser="$RET"
+            fi
+            db_get multiflexi/db/dbname || true
+            if [ -z "$RET" ] || echo "$RET" | grep -q "doesn't exist"; then
+                export dbc_dbname=multiflexi
+            else
+                export dbc_dbname="$RET"
+            fi
+
+            dbc_go multiflexi "$@"
+
+            #echo "############################ /etc/multiflexi/database.env"
+            [ -f /etc/multiflexi/database.env ] && cat /etc/multiflexi/database.env
+            #echo "############################"
+
+            if [ -f /etc/multiflexi/database.env ]; then
+                # Preserve original keys in multiflexi.env, overwrite/replace only those from database.env
+                tmpfile=$(mktemp)
+                cp /etc/multiflexi/multiflexi.env "$tmpfile" 2>/dev/null || touch "$tmpfile"
+                grep -v '^[[:space:]]*$' /etc/multiflexi/database.env | grep -v '^[[:space:]]*#' | while IFS='=' read -r key val; do
+                    # Remove existing key from multiflexi.env
+                    sed -i "/^$key=/d" "$tmpfile"
+                    # Add/replace key from database.env
+                    echo "$key=$val" >> "$tmpfile"
+                done
+                mv "$tmpfile" /etc/multiflexi/multiflexi.env
+                chown root:root /etc/multiflexi/multiflexi.env
+                chmod 664 /etc/multiflexi/multiflexi.env
+            fi
+
+            #echo "############################ /etc/multiflexi/multiflexi.env"
+            [ -f /etc/multiflexi/multiflexi.env ] && cat /etc/multiflexi/multiflexi.env
+            #echo "############################"
+
+
+
+# Uncomment the following lines if you want to set different permissions
+# on the installed database file
+#dbc_dbfile_owner="root:www-data"
+#dbc_dbfile_perms="0644"
+
+#DEBHELPER#
