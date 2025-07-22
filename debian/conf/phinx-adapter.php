@@ -59,9 +59,7 @@ include_once '/usr/share/php/EaseFluentPDO/Orm.php';
 
 include_once '/usr/share/php/EaseFluentPDO/Engine.php';
 
-if (file_exists('/etc/multiflexi/multiflexi.env')) {
-    \Ease\Shared::instanced()->loadConfig('/etc/multiflexi/multiflexi.env', true);
-}
+\Ease\Shared::init(['DB_CONNECTION'], '/etc/multiflexi/database.env', false);
 
 $prefix = '/usr/lib/multiflexi-database/';
 
