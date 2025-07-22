@@ -21,3 +21,9 @@ debian/multiflexi-database.debhelper.log
 debian/multiflexi-mysql.debhelper.log
 debian/multiflexi-sqlite.debhelper.log
 debian/tmp/composer.json
+debian/control
+debian/multiflexi-mysql.postrm.debhelper
+debian/multiflexi-pgsql.debhelper.log
+debian/multiflexi-pgsql.postrm.debhelper
+debian/multiflexi-pgsql.substvars
+debian/multiflexi-sqlite.postrm.debhelper
