@@ -2,3 +2,4 @@ db/migrations/*                /usr/lib/multiflexi-database/migrations/
 debian/conf/phinx-adapter.php  /usr/lib/multiflexi-database/
 debian/tmp/composer.json       /usr/lib/multiflexi-database/
 bin/multiflexi-migrator        /usr/bin/
+bin/update-multiflexi-env   /usr/bin/

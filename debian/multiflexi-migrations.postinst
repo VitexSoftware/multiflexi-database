@@ -12,6 +12,7 @@ composer-debian multiflexi-database
 
 case "$1" in
     configure)
+	update-multiflexi-env
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)
