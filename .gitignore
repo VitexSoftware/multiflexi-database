@@ -28,3 +28,6 @@ debian/multiflexi-pgsql.debhelper.log
 debian/multiflexi-pgsql.postrm.debhelper
 debian/multiflexi-pgsql.substvars
 debian/multiflexi-sqlite.postrm.debhelper
+debian/multiflexi-migrations.debhelper.log
+debian/multiflexi-migrations/
+debian/multiflexi-migrations.substvars
