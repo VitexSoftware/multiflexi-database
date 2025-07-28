@@ -47,12 +47,12 @@ demodata:
 	cd db ; ../vendor/bin/phinx seed:run -c ../phinx-adapter.php ; cd ..
 
 .PHONY: newmigration
-newmigration: ## Prepare new Database Migration
-ifeq ($(strip $(lastword $(MAKECMDGOALS))),newmigration)
-    @read -p "Enter CamelCase migration name : " migname ; cd db ; ../vendor/bin/phinx create $$migname -c ../phinx-adapter.php ; cd ..
-else
-    cd db ; ../vendor/bin/phinx create $(lastword $(MAKECMDGOALS)) -c ../phinx-adapter.php ; cd ..
-endif
+
+newmigration: ## Prepare new Database Migration (interactive if no name given)
+	@read -p "Enter CamelCase migration name : " migname ; cd db ; ../vendor/bin/phinx create $$migname -c ../phinx-adapter.php ; cd ..
+
+newmigration-%: ## Prepare new Database Migration with given name
+	cd db ; ../vendor/bin/phinx create $* -c ../phinx-adapter.php ; cd ..
 
 newseed:
 	read -p "Enter CamelCase seed name : " migname ; cd db ; ../vendor/bin/phinx seed:create $$migname -c ./phinx-adapter.php ; cd ..
