@@ -23,6 +23,8 @@ $shared = \Ease\Shared::instanced();
 
 if (file_exists('../.env')) {
     $shared->loadConfig('../.env', true);
+} elseif (file_exists('./.env')) {
+    $shared->loadConfig('./.env', true);
 }
 
 $prefix = file_exists('./db/') ? './db/' : '../db/';
