@@ -9,7 +9,7 @@ static-code-analysis: vendor ## Runs a static code analysis with phpstan/phpstan
 
 .PHONY: static-code-analysis-baseline
 static-code-analysis-baseline: check-symfony vendor ## Generates a baseline for static code analysis with phpstan/phpstan
-	vendor/bin/phpstan analyze --configuration=phpstan-default.neon.dist --generate-baseline=phpstan-default-baseline.neon --memory-limit=-1
+	vendor/bin/phpstan analyse --configuration=phpstan-default.neon.dist --generate-baseline=phpstan-default-baseline.neon --memory-limit=-1
 
 .PHONY: tests
 tests: vendor
@@ -48,7 +48,11 @@ demodata:
 
 .PHONY: newmigration
 newmigration: ## Prepare new Database Migration
-	read -p "Enter CamelCase migration name : " migname ; cd db ; ../vendor/bin/phinx create $$migname -c ../phinx-adapter.php ; cd ..
+ifeq ($(strip $(lastword $(MAKECMDGOALS))),newmigration)
+    @read -p "Enter CamelCase migration name : " migname ; cd db ; ../vendor/bin/phinx create $$migname -c ../phinx-adapter.php ; cd ..
+else
+    cd db ; ../vendor/bin/phinx create $(lastword $(MAKECMDGOALS)) -c ../phinx-adapter.php ; cd ..
+endif
 
 newseed:
 	read -p "Enter CamelCase seed name : " migname ; cd db ; ../vendor/bin/phinx seed:create $$migname -c ./phinx-adapter.php ; cd ..
