@@ -31,3 +31,5 @@ debian/multiflexi-sqlite.postrm.debhelper
 debian/multiflexi-migrations.debhelper.log
 debian/multiflexi-migrations/
 debian/multiflexi-migrations.substvars
+/nbproject/private/
+/nbproject/

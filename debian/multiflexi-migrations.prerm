@@ -6,7 +6,7 @@ case "$1" in
 	rm -f /usr/lib/multiflexi-database/composer.lock
     ;;
 
-    failed-upgrade)
+    upgrade|failed-upgrade)
     ;;
 
     *)
