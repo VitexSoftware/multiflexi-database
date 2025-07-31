@@ -1,8 +1,15 @@
-multiflexi-database (1.29.0) UNRELEASED; urgency=medium
+multiflexi-database (1.30.0) UNRELEASED; urgency=medium
 
+  * RunTemplate interval now can be an Crontab expresion
+
+ -- Vitex <vitezslav.dvorak@spojenet.cz>  Thu, 31 Jul 2025 20:30:51 +0200
+
+multiflexi-database (1.29.0) unstable; urgency=medium
+
+  [ vitex ]
   * version bump to be installable
 
- -- vitex <info@vitexsoftware.cz>  Sat, 26 Jul 2025 02:59:18 +0200
+ -- Vitex <vitezslav.dvorak@spojenet.cz>  Thu, 31 Jul 2025 20:29:32 +0200
 
 multiflexi-database (0.1.0) unstable; urgency=low
 
