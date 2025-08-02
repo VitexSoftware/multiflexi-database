@@ -33,5 +33,25 @@ final class RuntemplateCron extends AbstractMigration
         $table = $this->table('runtemplate');
         $table->addColumn('cron', 'string', ['limit' => 64, 'null' => true]);
         $table->update();
+
+        // Convert 'inter' values to cron expressions
+        $map = [
+            'y' => '0 0 1 1 *',    // yearly
+            'm' => '0 0 1 * *',    // monthly
+            'w' => '0 0 * * 0',    // weekly (Sunday)
+            'd' => '0 0 * * *',    // daily
+            'h' => '0 * * * *',    // hourly
+            'i' => '* * * * *',    // minutely
+            'n' => '',             // disabled
+        ];
+
+        // Use a DB adapter to update the cron column based on inter
+        $rows = $this->fetchAll('SELECT id, inter FROM runtemplate');
+        foreach ($rows as $row) {
+            $cron = isset($map[$row['inter']]) ? $map[$row['inter']] : '';
+            $this->execute(
+                "UPDATE runtemplate SET cron = " . ($cron === '' ? "NULL" : "'" . $cron . "'") . " WHERE id = " . (int)$row['id']
+            );
+        }
     }
 }
