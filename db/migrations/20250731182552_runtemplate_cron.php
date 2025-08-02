@@ -15,7 +15,7 @@ declare(strict_types=1);
 
 use Phinx\Migration\AbstractMigration;
 
-final class RunTemplateCron extends AbstractMigration
+final class RuntemplateCron extends AbstractMigration
 {
     /**
      * Change Method.
@@ -31,7 +31,7 @@ final class RunTemplateCron extends AbstractMigration
     public function change(): void
     {
         $table = $this->table('runtemplate');
-        $table->changeColumn('interv', 'string', ['limit' => 64, 'null' => false]);
+        $table->addColumn('cron', 'string', ['limit' => 64, 'null' => true]);
         $table->update();
     }
 }
