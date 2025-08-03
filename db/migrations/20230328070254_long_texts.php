@@ -36,7 +36,7 @@ final class LongTexts extends AbstractMigration
 
         $table = $this->table('job');
 
-        if ($this->adapter->getAdapterType() !== 'sqlite') {
+        if ($this->adapter->getAdapterType() === 'mysql') {
             $table
                 ->changeColumn('stdout', 'blob', ['comment' => 'Job Stdout store', 'limit' => \Phinx\Db\Adapter\MysqlAdapter::BLOB_LONG])
                 ->update();

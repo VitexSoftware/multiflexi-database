@@ -47,10 +47,11 @@ final class RuntemplateCron extends AbstractMigration
 
         // Use a DB adapter to update the cron column based on inter
         $rows = $this->fetchAll('SELECT id, interv FROM runtemplate');
+
         foreach ($rows as $row) {
-            $cron = isset($map[$row['interv']]) ? $map[$row['interv']] : '';
+            $cron = $map[$row['interv']] ?? '';
             $this->execute(
-                "UPDATE runtemplate SET cron = " . ($cron === '' ? "NULL" : "'" . $cron . "'") . " WHERE id = " . (int)$row['id']
+                'UPDATE runtemplate SET cron = '.($cron === '' ? 'NULL' : "'".$cron."'").' WHERE id = '.(int) $row['id'],
             );
         }
     }

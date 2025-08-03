@@ -1,8 +1,14 @@
-multiflexi-database (1.31.0) UNRELEASED; urgency=medium
+multiflexi-database (2.0.0) UNRELEASED; urgency=medium
+
+  * PostGresSQL support added
+
+ -- vitex <info@vitexsoftware.cz>  Sun, 03 Aug 2025 16:49:40 +0200
+
+multiflexi-database (1.31.0) unstable; urgency=medium
 
   * crontab column added
 
- -- vitex <info@vitexsoftware.cz>  Sat, 02 Aug 2025 12:04:44 +0200
+ -- vitex <info@vitexsoftware.cz>  Sun, 03 Aug 2025 16:49:36 +0200
 
 multiflexi-database (1.30.0) unstable; urgency=medium
 

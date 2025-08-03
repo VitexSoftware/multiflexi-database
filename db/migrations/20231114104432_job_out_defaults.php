@@ -31,9 +31,12 @@ final class JobOutDefaults extends AbstractMigration
     public function change(): void
     {
         $table = $this->table('job');
-        $table
-            ->changeColumn('stderr', 'blob', ['null' => false, 'default' => ''])
-            ->changeColumn('stdout', 'blob', ['null' => false, 'default' => ''])
-            ->update();
+
+        if ($this->adapter->getAdapterType() === 'mysql') {
+            $table
+                ->changeColumn('stderr', 'blob', ['null' => false, 'default' => ''])
+                ->changeColumn('stdout', 'blob', ['null' => false, 'default' => ''])
+                ->update();
+        }
     }
 }

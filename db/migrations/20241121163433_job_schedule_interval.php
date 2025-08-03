@@ -30,8 +30,9 @@ final class JobScheduleInterval extends AbstractMigration
      */
     public function change(): void
     {
-        if (method_exists($this, 'getQueryBuilder')) {
-            $builder = $this->getQueryBuilder('update');
+        // Set all schedule values to NULL (already present)
+        if (method_exists($this, 'updateQuery')) {
+            $builder = $this->updateQuery();
             $builder
                 ->update('job')
                 ->set('schedule', null)
@@ -43,7 +44,14 @@ final class JobScheduleInterval extends AbstractMigration
         $table = $this->table('job');
         $table
             ->addColumn('schedule_type', 'string', ['comment' => 'Job Schedule type', 'default' => null, 'null' => true])
-            ->changeColumn('schedule', 'timestamp', ['null' => true, 'comment' => 'Job Schedule time'])
             ->update();
+
+        // Change column type for PostgreSQL with explicit casting
+        if ($this->getAdapter()->getAdapterType() === 'pgsql') {
+            $this->execute('ALTER TABLE job ALTER COLUMN schedule TYPE timestamp USING schedule::timestamp');
+            $this->execute("COMMENT ON COLUMN job.schedule IS 'Job Schedule time'");
+        } else {
+            $table->changeColumn('schedule', 'timestamp', ['null' => true, 'comment' => 'Job Schedule time'])->update();
+        }
     }
 }
