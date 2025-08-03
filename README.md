@@ -3,7 +3,7 @@
 
 provide database configuration and migration for MultiFlexi's [executor](https://github.com/VitexSoftware/multiflexi-executor), [scheduler](https://github.com/VitexSoftware/multiflexi-scheduler), [api](https://github.com/VitexSoftware/multiflexi-server) and [web](https://github.com/VitexSoftware/MultiFlexi).
 
-![MultiFlexi Chan](chan.jpg?raw=true)
+![MultiFlexi Chan](chan.jpeg?raw=true)
 
 ## Installation
 
