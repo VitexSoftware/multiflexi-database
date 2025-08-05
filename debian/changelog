@@ -1,8 +1,14 @@
-multiflexi-database (2.0.0) UNRELEASED; urgency=medium
+multiflexi-database (2.1.0) UNRELEASED; urgency=medium
+
+  * apps.artifacts added
+
+ -- vitex <info@vitexsoftware.cz>  Tue, 05 Aug 2025 23:56:37 +0200
+
+multiflexi-database (2.0.0) unstable; urgency=medium
 
   * PostGresSQL support added
 
- -- vitex <info@vitexsoftware.cz>  Sun, 03 Aug 2025 16:49:40 +0200
+ -- vitex <info@vitexsoftware.cz>  Tue, 05 Aug 2025 23:56:15 +0200
 
 multiflexi-database (1.31.0) unstable; urgency=medium
 
