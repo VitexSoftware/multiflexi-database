@@ -15,7 +15,7 @@ declare(strict_types=1);
 
 use Phinx\Migration\AbstractMigration;
 
-final class AppArtifacts extends AbstractMigration
+final class RunTemplateLastSchedule extends AbstractMigration
 {
     /**
      * Change Method.
@@ -30,12 +30,11 @@ final class AppArtifacts extends AbstractMigration
      */
     public function change(): void
     {
-        $table = $this->table('apps');
-        $table->addColumn('artifacts', 'string', [
-            'default' => '',
-            'limit' => 255,
+        $table = $this->table('runtemplate');
+        $table->addColumn('last_schedule', 'timestamp', [
             'null' => true,
-            'comment' => 'Artifacts related to the application',
-        ])->update();
+            'default' => null,
+        ]);
+        $table->update();
     }
 }
