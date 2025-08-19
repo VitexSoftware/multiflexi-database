@@ -1,5 +1,5 @@
 Source: multiflexi-database
-Section: unknown
+Section: database
 Priority: optional
 Maintainer: Vítězslav Dvořák <info@vitexsoftware.cz>
 Build-Depends: debhelper-compat (= 13)
@@ -12,7 +12,7 @@ Rules-Requires-Root: no
 Package: multiflexi-migrations
 Architecture: all
 Multi-Arch: foreign
-Depends: ${misc:Depends}, ${shlibs:Depends}, multiflexi-common, php-vitexsoftware-ease-fluentpdo
+Depends: ${misc:Depends}, multiflexi-common, php-vitexsoftware-ease-fluentpdo, adduser
 Pre-Depends: php-robmorgan-phinx|php-cakephp-phinx
 Description: Database migrations for MultiFlexi
  Php classes used by the phinx migration system to mange MultiFlexi

@@ -1,5 +1,5 @@
-multiflexi-database_1.29.0_amd64.buildinfo unknown optional
-multiflexi-migrations_1.29.0_all.deb unknown optional
-multiflexi-mysql_1.29.0_all.deb unknown optional
-multiflexi-pgsql_1.29.0_all.deb unknown optional
-multiflexi-sqlite_1.29.0_all.deb unknown optional
+multiflexi-database_2.1.0_amd64.buildinfo database optional
+multiflexi-migrations_2.1.0_all.deb database optional
+multiflexi-mysql_2.1.0_all.deb database optional
+multiflexi-pgsql_2.1.0_all.deb database optional
+multiflexi-sqlite_2.1.0_all.deb database optional

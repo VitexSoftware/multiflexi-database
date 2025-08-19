@@ -28,10 +28,10 @@ case "$1" in
         # 3. create user if not existing
         if ! getent passwd | grep -q "^$SERVER_USER:"; then
             echo -n "Adding system user $SERVER_USER.."
-            adduser --quiet \
+        adduser --quiet \
                 --system \
                 --ingroup $SERVER_GROUP \
-                --no-create-home \
+                --home $SERVER_HOME \
                 --disabled-password \
                 $SERVER_USER 2>/dev/null || true
             echo "..done"
@@ -42,8 +42,8 @@ case "$1" in
             -g $SERVER_GROUP \
             $SERVER_USER
         # 5. adjust file and directory permissions
-        if ! dpkg-statoverride --list $SERVER_HOME >/dev/null; then
-            chown -R $SERVER_USER:adm $SERVER_HOME
+        if ! dpkg-statoverride --list $SERVER_HOME > /dev/null; then
+            chown $SERVER_USER:adm $SERVER_HOME
             chmod u=rwx,g=rxs,o= $SERVER_HOME
         fi
         # 6. Add the user to the ADDGROUP group

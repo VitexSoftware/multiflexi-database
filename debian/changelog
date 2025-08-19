@@ -33,7 +33,6 @@ multiflexi-database (1.29.0) unstable; urgency=medium
 multiflexi-database (0.1.0) unstable; urgency=low
 
   [ Vítězslav Dvořák ]
-  * Initial release. Closes: #nnnn
-    <nnnn is the bug number of your ITP>
+  * Initial release of MultiFlexi database migrations and support packages.
 
  -- vitex <info@vitexsoftware.cz>  Sat, 26 Jul 2025 02:58:59 +0200
