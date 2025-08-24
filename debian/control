@@ -2,7 +2,7 @@ Source: multiflexi-database
 Section: database
 Priority: optional
 Maintainer: Vítězslav Dvořák <info@vitexsoftware.cz>
-Build-Depends: debhelper-compat (= 13)
+Build-Depends: debhelper-compat (= 13), moreutils, jq
 Standards-Version: 4.6.1
 Homepage: https://github.com/VitexSoftware/multiflexi-database
 Rules-Requires-Root: no
