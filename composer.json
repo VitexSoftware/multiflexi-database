@@ -9,7 +9,7 @@
     ],
     "require": {
         "vitexsoftware/ease-fluentpdo": "dev-main",
-        "robmorgan/phinx": "^0.14"
+        "robmorgan/phinx": "^0.16"
     },
     "license": "MIT",
     "authors": [
