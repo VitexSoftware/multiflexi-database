@@ -86,7 +86,7 @@ distributions.each { distro ->
                                 sh 'echo -e "${GREEN} installing ' + pkgName + ' on `lsb_release -sc` ${ENDCOLOR} "'
                                 sh 'sudo DEBIAN_FRONTEND=noninteractive DEBCONF_DEBUG=' + debconf_debug + ' apt-get -y install ' + pkgName + ' || sudo apt-get -y -f install'
                         }
-                    }                        
+                    }
 
                 }
                 stage('Archive artifacts ' + distroName ) {
@@ -117,6 +117,8 @@ distributions.each { distro ->
         }
     }
 }
+}
+
 parallel branches
 
 node {
