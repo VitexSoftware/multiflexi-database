@@ -82,9 +82,9 @@ distributions.each { distro ->
                             }
                         }
                         if (debFile) {
-                                def pkgName = deb_file.tokenize('/')[-1].replaceFirst(/_.*/, '')
-                                sh 'echo -e "${GREEN} installing ' + pkgName + ' on `lsb_release -sc` ${ENDCOLOR} "'
-                                sh 'sudo DEBIAN_FRONTEND=noninteractive DEBCONF_DEBUG=' + debconf_debug + ' apt-get -y install ' + pkgName + ' || sudo apt-get -y -f install'
+                            def pkgName = debFile.tokenize('/')[-1].replaceFirst(/_.*/, '')
+                            sh 'echo -e "${GREEN} installing ' + pkgName + ' on `lsb_release -sc` ${ENDCOLOR} "'
+                            sh 'sudo DEBIAN_FRONTEND=noninteractive DEBCONF_DEBUG=' + debconf_debug + ' apt-get -y install ' + pkgName + ' || sudo apt-get -y -f install'
                         }
                     }
 
