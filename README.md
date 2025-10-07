@@ -23,6 +23,16 @@ sudo apt update
 
 Install the package for your database (replace `DBTYPE` with `mysql`, `pgsql`, or `sqlite`):
 
+### Skipping automatic migration
+
+If you want to skip running database migrations during package installation or upgrade, set the environment variable `MULTIFLEXI_NOMIGRATE` before installing or upgrading the package. This is especially useful when building Docker images, so that migrations are not run during image creation.
+
+```sh
+sudo MULTIFLEXI_NOMIGRATE=1 apt install multiflexi-sqlite
+```
+
+When this variable is set, the `multiflexi-migrator` step in the post-installation scripts will be skipped.
+
 ```sh
 sudo apt install multiflexi-DBTYPE
 ```

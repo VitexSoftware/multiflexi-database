@@ -36,7 +36,11 @@ dbc_sql_substitutions="yes"
 
             dbc_go multiflexi "$@"
 
-            multiflexi-migrator
+            if [ -z "$MULTIFLEXI_NOMIGRATE" ]; then
+                multiflexi-migrator
+            else
+                echo "Skipping migration due to MULTIFLEXI_NOMIGRATE being set."
+            fi
 
 
 #DEBHELPER#
