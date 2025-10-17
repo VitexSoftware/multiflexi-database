@@ -2,6 +2,17 @@
 
 declare(strict_types=1);
 
+/**
+ * This file is part of the MultiFlexi package
+ *
+ * https://multiflexi.eu/
+ *
+ * (c) Vítězslav Dvořák <http://vitexsoftware.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 use Phinx\Migration\AbstractMigration;
 
 final class EnsureAppsAndConfigurationTables extends AbstractMigration
@@ -17,19 +28,20 @@ final class EnsureAppsAndConfigurationTables extends AbstractMigration
             $table = $this->table('configuration');
             $columns = $this->getAdapter()->getColumns('configuration');
             $hasIdColumn = false;
-            
+
             foreach ($columns as $column) {
                 if ($column->getName() === 'id') {
                     $hasIdColumn = true;
+
                     break;
                 }
             }
-            
+
             if (!$hasIdColumn) {
                 // The table exists without id, we need to add it
                 // This is complex because the table was created without specifying id: false
                 // Phinx by default adds an id column, so this table must have been created differently
-                
+
                 // Create a temporary table with the structure we want
                 $tempTable = $this->table('configuration_temp');
                 $tempTable
@@ -46,7 +58,7 @@ final class EnsureAppsAndConfigurationTables extends AbstractMigration
                     ->create();
 
                 // Copy data
-                $this->execute('INSERT INTO configuration_temp (app_id, company_id, runtemplate_id, `key`, name, value) ' .
+                $this->execute('INSERT INTO configuration_temp (app_id, company_id, runtemplate_id, `key`, name, value) '.
                                'SELECT app_id, company_id, runtemplate_id, `key`, `key` as name, value FROM configuration');
 
                 // Drop old table
@@ -62,14 +74,15 @@ final class EnsureAppsAndConfigurationTables extends AbstractMigration
             $table = $this->table('conffield');
             $columns = $this->getAdapter()->getColumns('conffield');
             $hasIdColumn = false;
-            
+
             foreach ($columns as $column) {
                 if ($column->getName() === 'id') {
                     $hasIdColumn = true;
+
                     break;
                 }
             }
-            
+
             if (!$hasIdColumn) {
                 // Create temporary table with id
                 $tempTable = $this->table('conffield_temp');
@@ -84,7 +97,7 @@ final class EnsureAppsAndConfigurationTables extends AbstractMigration
                     ->create();
 
                 // Copy data
-                $this->execute('INSERT INTO conffield_temp (app_id, keyname, type, description) ' .
+                $this->execute('INSERT INTO conffield_temp (app_id, keyname, type, description) '.
                                'SELECT app_id, keyname, type, description FROM conffield');
 
                 // Drop old table
@@ -92,7 +105,7 @@ final class EnsureAppsAndConfigurationTables extends AbstractMigration
 
                 // Rename temp table
                 $this->execute('ALTER TABLE conffield_temp RENAME TO conffield');
-                
+
                 // Re-add indexes and foreign keys
                 $this->table('conffield')
                     ->addIndex(['app_id', 'keyname'], ['unique' => true])
