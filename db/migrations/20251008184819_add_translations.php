@@ -19,8 +19,6 @@ final class AddTranslations extends AbstractMigration
 {
     public function change(): void
     {
-        // === CREATE TRANSLATION TABLES ===
-        // apps translations
         $databaseType = $this->getAdapter()->getOption('adapter');
         $unsigned = ($databaseType === 'mysql') ? ['signed' => false] : [];
 
