@@ -8,6 +8,8 @@
 
 ## Key Technologies
 - Database Migration Tools
+- Database Agnostic
+- Using PHP Phinx migrations https://phinx.org/
 - Support for Multiple Database Engines:
   - MySQL
   - PostgreSQL
@@ -19,7 +21,7 @@
 ## Architecture & Structure
 ```
 multiflexi-database/
-├── migrations/          # Database migration files
+├── db/migrations/          # Database migration files
 ├── debian/              # Debian packaging files
 ├── config/              # Database configuration templates
 └── scripts/             # Migration and setup scripts
@@ -93,8 +95,31 @@ sudo -E apt install multiflexi-mysql
 - **Distribution**: Via VitexSoftware APT repository
 - **Docker Support**: Use MULTIFLEXI_NOMIGRATE=1 for image builds
 
+## Migration Development Guidelines
+
+### Foreign Key Type Consistency
+**CRITICAL**: When creating foreign key relationships, ensure column types match exactly between tables, especially for MySQL unsigned integers.
+
+```php
+// For MySQL compatibility, always check database type and use unsigned integers when referencing user.id
+$databaseType = $this->getAdapter()->getOption('adapter');
+$unsigned = ($databaseType === 'mysql') ? ['signed' => false] : [];
+
+// Use array_merge to apply unsigned attribute when referencing user table
+->addColumn('user_id', 'integer', array_merge(['null' => false], $unsigned))
+```
+
+**Why**: The `user.id` field is `int(11) unsigned` in MySQL. Foreign key columns must have identical types or constraint creation will fail with "errno: 150 Foreign key constraint is incorrectly formed".
+
+### Migration Command
+```bash
+# Always use the phinx-adapter.php configuration
+vendor/bin/phinx migrate -c phinx-adapter.php
+```
+
 ## Troubleshooting
 - **Migration Failures**: Check database permissions and connectivity
+- **Foreign Key Constraint Errors**: Verify column types match exactly between referenced tables
 - **Package Conflicts**: Ensure only one multiflexi-DBTYPE package is installed
 - **Connection Issues**: Verify database credentials in configuration
 
