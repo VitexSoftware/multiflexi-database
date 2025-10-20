@@ -39,11 +39,12 @@ sudo apt install multiflexi-DBTYPE
 
 Supported database engines:
 
-- MySQL
-- SQLite
-- PostgreSQL
-- MariaDB
-- MSSQL (experimental)
+- **MySQL** / **MariaDB** (fully supported)
+- **PostgreSQL** (fully supported)
+- **SQLite** (fully supported)
+- **SQL Server** (experimental support)
+
+All MultiFlexi components are designed to work seamlessly with any of these database backends through database abstraction layers.
 
 ## MultiFlexi
 
