@@ -26,3 +26,5 @@ $runtemplates = $this->table('example');
 $runtemplates
     ->addColumn('another_table_id', 'integer', array_merge(['null' => false], $unsigned))
 ```
+
+After every single edit to a PHP file, always run `php -l` on the edited file to lint it and ensure code sanity before proceeding further. This is mandatory for all PHP code changes.

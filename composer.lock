@@ -1662,12 +1662,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/VitexSoftware/php-ease-core.git",
-                "reference": "d37772a4007f40078b68ebd5c112566ef4dff1ca"
+                "reference": "e4b95455a19d9892b1488ddcee7f677ffe59e967"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/VitexSoftware/php-ease-core/zipball/d37772a4007f40078b68ebd5c112566ef4dff1ca",
-                "reference": "d37772a4007f40078b68ebd5c112566ef4dff1ca",
+                "url": "https://api.github.com/repos/VitexSoftware/php-ease-core/zipball/e4b95455a19d9892b1488ddcee7f677ffe59e967",
+                "reference": "e4b95455a19d9892b1488ddcee7f677ffe59e967",
                 "shasum": ""
             },
             "require": {
@@ -1720,7 +1720,7 @@
                     "type": "patreon"
                 }
             ],
-            "time": "2025-10-08T13:04:43+00:00"
+            "time": "2025-10-17T14:00:45+00:00"
         },
         {
             "name": "vitexsoftware/ease-fluentpdo",
@@ -3153,8 +3153,8 @@
             "version": "2.1.x-dev",
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/bab0af7cae967fcbdf859845dad5bc18cb0498ae",
-                "reference": "bab0af7cae967fcbdf859845dad5bc18cb0498ae",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/6c44887423faf584640fdddc650b817699849e25",
+                "reference": "6c44887423faf584640fdddc650b817699849e25",
                 "shasum": ""
             },
             "require": {
@@ -3200,7 +3200,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-10-16T10:18:07+00:00"
+            "time": "2025-10-17T15:16:49+00:00"
         },
         {
             "name": "phpstan/phpstan-phpunit",
