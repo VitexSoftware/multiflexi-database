@@ -163,9 +163,16 @@ class GdprPhase3SecurityEnhancements extends AbstractMigration
             ->addColumn('event_description', 'text', ['null' => false])
             ->addColumn('ip_address', 'string', ['limit' => 45, 'null' => true])
             ->addColumn('user_agent', 'text', ['null' => true])
-            ->addColumn('additional_data', 'json', ['null' => true])
-            ->addColumn('severity', 'enum', ['values' => ['low', 'medium', 'high', 'critical'], 'default' => 'medium'])
-            ->addColumn('created_at', 'timestamp', ['default' => 'CURRENT_TIMESTAMP'])
+            ->addColumn('additional_data', 'json', ['null' => true]);
+
+        // Add severity column - use enum for MySQL/PostgreSQL, string for SQLite
+        if ($this->adapter->getAdapterType() === 'sqlite') {
+            $table->addColumn('severity', 'string', ['limit' => 10, 'default' => 'medium', 'null' => false]);
+        } else {
+            $table->addColumn('severity', 'enum', ['values' => ['low', 'medium', 'high', 'critical'], 'default' => 'medium']);
+        }
+        
+        $table->addColumn('created_at', 'timestamp', ['default' => 'CURRENT_TIMESTAMP'])
             ->addIndex(['event_type'])
             ->addIndex(['severity'])
             ->addIndex(['created_at'])
