@@ -52,14 +52,21 @@ class GdprPhase4DataRetention extends AbstractMigration
             ->addColumn('data_type', 'string', ['limit' => 50, 'null' => false, 'comment' => 'Type of data this policy applies to'])
             ->addColumn('table_name', 'string', ['limit' => 64, 'null' => false, 'comment' => 'Database table name'])
             ->addColumn('retention_period_days', 'integer', ['null' => false, 'comment' => 'Retention period in days'])
-            ->addColumn('grace_period_days', 'integer', ['default' => 30, 'null' => false, 'comment' => 'Grace period before actual deletion'])
-            ->addColumn('deletion_action', 'enum', [
+            ->addColumn('grace_period_days', 'integer', ['default' => 30, 'null' => false, 'comment' => 'Grace period before actual deletion']);
+
+        // Add deletion_action column - use enum for MySQL/PostgreSQL, string for SQLite
+        if ($this->adapter->getAdapterType() === 'sqlite') {
+            $table->addColumn('deletion_action', 'string', ['limit' => 20, 'default' => 'soft_delete', 'null' => false, 'comment' => 'Action to take when retention period expires']);
+        } else {
+            $table->addColumn('deletion_action', 'enum', [
                 'values' => ['hard_delete', 'soft_delete', 'anonymize', 'archive'],
                 'default' => 'soft_delete',
                 'null' => false,
                 'comment' => 'Action to take when retention period expires'
-            ])
-            ->addColumn('legal_basis', 'string', ['limit' => 255, 'null' => true, 'comment' => 'Legal basis for retention period'])
+            ]);
+        }
+
+        $table->addColumn('legal_basis', 'string', ['limit' => 255, 'null' => true, 'comment' => 'Legal basis for retention period'])
             ->addColumn('description', 'text', ['null' => true, 'comment' => 'Human-readable description of the policy'])
             ->addColumn('enabled', 'boolean', ['default' => true, 'null' => false, 'comment' => 'Whether this policy is active'])
             ->addColumn('created_by', 'integer', array_merge(['null' => false], $unsigned))
@@ -91,18 +98,28 @@ class GdprPhase4DataRetention extends AbstractMigration
 
         $table = $this->table('retention_cleanup_jobs');
         $table
-            ->addColumn('policy_id', 'integer', array_merge(['null' => false], $unsigned))
-            ->addColumn('job_type', 'enum', [
-                'values' => ['scheduled_cleanup', 'manual_cleanup', 'grace_period_cleanup'],
-                'null' => false,
-                'comment' => 'Type of cleanup job'
-            ])
-            ->addColumn('status', 'enum', [
-                'values' => ['pending', 'running', 'completed', 'failed', 'cancelled'],
-                'default' => 'pending',
-                'null' => false
-            ])
-            ->addColumn('started_by', 'integer', array_merge(['null' => true], $unsigned))
+            ->addColumn('policy_id', 'integer', array_merge(['null' => false], $unsigned));
+
+        // Add enum columns - use enum for MySQL/PostgreSQL, string for SQLite
+        if ($this->adapter->getAdapterType() === 'sqlite') {
+            $table
+                ->addColumn('job_type', 'string', ['limit' => 30, 'null' => false, 'comment' => 'Type of cleanup job'])
+                ->addColumn('status', 'string', ['limit' => 20, 'default' => 'pending', 'null' => false]);
+        } else {
+            $table
+                ->addColumn('job_type', 'enum', [
+                    'values' => ['scheduled_cleanup', 'manual_cleanup', 'grace_period_cleanup'],
+                    'null' => false,
+                    'comment' => 'Type of cleanup job'
+                ])
+                ->addColumn('status', 'enum', [
+                    'values' => ['pending', 'running', 'completed', 'failed', 'cancelled'],
+                    'default' => 'pending',
+                    'null' => false
+                ]);
+        }
+
+        $table->addColumn('started_by', 'integer', array_merge(['null' => true], $unsigned))
             ->addColumn('started_at', 'timestamp', ['null' => true])
             ->addColumn('completed_at', 'timestamp', ['null' => true])
             ->addColumn('records_processed', 'integer', ['default' => 0, 'null' => false])
@@ -143,13 +160,20 @@ class GdprPhase4DataRetention extends AbstractMigration
         $unsigned = ($databaseType === 'mysql') ? ['signed' => false] : [];
 
         $table = $this->table('data_archive');
-        $table
-            ->addColumn('archive_type', 'enum', [
+        $table;
+
+        // Add archive_type column - use enum for MySQL/PostgreSQL, string for SQLite
+        if ($this->adapter->getAdapterType() === 'sqlite') {
+            $table->addColumn('archive_type', 'string', ['limit' => 30, 'null' => false, 'comment' => 'Type of archive']);
+        } else {
+            $table->addColumn('archive_type', 'enum', [
                 'values' => ['pre_deletion', 'anonymization_backup', 'legal_hold'],
                 'null' => false,
                 'comment' => 'Type of archive'
-            ])
-            ->addColumn('source_table', 'string', ['limit' => 64, 'null' => false, 'comment' => 'Original table name'])
+            ]);
+        }
+
+        $table->addColumn('source_table', 'string', ['limit' => 64, 'null' => false, 'comment' => 'Original table name'])
             ->addColumn('source_record_id', 'integer', ['null' => false, 'comment' => 'Original record ID'])
             ->addColumn('archived_data', 'text', ['null' => false, 'comment' => 'JSON-encoded original data'])
             ->addColumn('retention_job_id', 'integer', array_merge(['null' => true], $unsigned))
@@ -188,12 +212,19 @@ class GdprPhase4DataRetention extends AbstractMigration
         $unsigned = ($databaseType === 'mysql') ? ['signed' => false] : [];
 
         $table = $this->table('retention_reports');
-        $table
-            ->addColumn('report_type', 'enum', [
+        $table;
+
+        // Add report_type column - use enum for MySQL/PostgreSQL, string for SQLite
+        if ($this->adapter->getAdapterType() === 'sqlite') {
+            $table->addColumn('report_type', 'string', ['limit' => 30, 'null' => false]);
+        } else {
+            $table->addColumn('report_type', 'enum', [
                 'values' => ['daily_summary', 'weekly_summary', 'monthly_summary', 'policy_audit', 'compliance_report'],
                 'null' => false
-            ])
-            ->addColumn('report_period_start', 'datetime', ['null' => false])
+            ]);
+        }
+
+        $table->addColumn('report_period_start', 'datetime', ['null' => false])
             ->addColumn('report_period_end', 'datetime', ['null' => false])
             ->addColumn('generated_by', 'integer', array_merge(['null' => false], $unsigned))
             ->addColumn('report_data', 'json', ['null' => false, 'comment' => 'Structured report data'])
