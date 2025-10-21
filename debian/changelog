@@ -1,8 +1,14 @@
-multiflexi-database (2.2.0) UNRELEASED; urgency=medium
+multiflexi-database (2.3.0) UNRELEASED; urgency=medium
+
+  * GDPR support
+
+ -- vitex <info@vitexsoftware.cz>  Tue, 21 Oct 2025 13:29:14 +0200
+
+multiflexi-database (2.2.0) unstable; urgency=medium
 
   * MULTIFLEXI_NOMIGRATE added
 
- -- vitex <info@vitexsoftware.cz>  Wed, 08 Oct 2025 01:33:38 +0200
+ -- vitex <info@vitexsoftware.cz>  Tue, 21 Oct 2025 13:28:53 +0200
 
 multiflexi-database (2.1.0) unstable; urgency=medium
 
