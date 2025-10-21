@@ -29,17 +29,28 @@ class GdprUserDeletion extends AbstractMigration
             ->addColumn('user_id', 'integer', array_merge(['null' => false], $unsigned))
             ->addColumn('requested_by_user_id', 'integer', array_merge(['null' => false], $unsigned))
             ->addColumn('request_date', 'datetime', ['null' => false])
-            ->addColumn('reason', 'text', ['null' => true])
-            ->addColumn('deletion_type', 'enum', [
-                'values' => ['soft', 'hard', 'anonymize'],
-                'default' => 'soft',
-                'null' => false
-            ])
-            ->addColumn('status', 'enum', [
-                'values' => ['pending', 'approved', 'rejected', 'completed'],
-                'default' => 'pending',
-                'null' => false
-            ])
+            ->addColumn('reason', 'text', ['null' => true]);
+
+        // Add enum columns - use enum for MySQL/PostgreSQL, string for SQLite
+        if ($this->adapter->getAdapterType() === 'sqlite') {
+            $deletionRequests
+                ->addColumn('deletion_type', 'string', ['limit' => 20, 'default' => 'soft', 'null' => false])
+                ->addColumn('status', 'string', ['limit' => 20, 'default' => 'pending', 'null' => false]);
+        } else {
+            $deletionRequests
+                ->addColumn('deletion_type', 'enum', [
+                    'values' => ['soft', 'hard', 'anonymize'],
+                    'default' => 'soft',
+                    'null' => false
+                ])
+                ->addColumn('status', 'enum', [
+                    'values' => ['pending', 'approved', 'rejected', 'completed'],
+                    'default' => 'pending',
+                    'null' => false
+                ]);
+        }
+
+        $deletionRequests
             ->addColumn('reviewed_by_user_id', 'integer', array_merge(['null' => true], $unsigned))
             ->addColumn('review_date', 'datetime', ['null' => true])
             ->addColumn('review_notes', 'text', ['null' => true])
@@ -57,11 +68,19 @@ class GdprUserDeletion extends AbstractMigration
         $deletionAudit
             ->addColumn('deletion_request_id', 'integer', array_merge(['null' => false], $unsigned))
             ->addColumn('table_name', 'string', ['limit' => 128, 'null' => false])
-            ->addColumn('record_id', 'integer', ['null' => true])
-            ->addColumn('action', 'enum', [
+            ->addColumn('record_id', 'integer', ['null' => true]);
+
+        // Add action column - use enum for MySQL/PostgreSQL, string for SQLite
+        if ($this->adapter->getAdapterType() === 'sqlite') {
+            $deletionAudit->addColumn('action', 'string', ['limit' => 20, 'null' => false]);
+        } else {
+            $deletionAudit->addColumn('action', 'enum', [
                 'values' => ['deleted', 'anonymized', 'retained'],
                 'null' => false
-            ])
+            ]);
+        }
+
+        $deletionAudit
             ->addColumn('reason', 'string', ['limit' => 255, 'null' => true])
             ->addColumn('data_before', 'text', ['null' => true])
             ->addColumn('data_after', 'text', ['null' => true])
