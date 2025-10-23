@@ -16,8 +16,8 @@ declare(strict_types=1);
 use Phinx\Migration\AbstractMigration;
 
 /**
- * GDPR Phase 4: Data Retention and Deletion Policies Migration
- * 
+ * GDPR Phase 4: Data Retention and Deletion Policies Migration.
+ *
  * This migration implements data retention and deletion features for GDPR compliance:
  * - Data retention policies configuration
  * - Automated cleanup jobs tracking
@@ -38,7 +38,57 @@ class GdprPhase4DataRetention extends AbstractMigration
     }
 
     /**
-     * Create data retention policies configuration table
+     * Rollback migration.
+     */
+    public function down(): void
+    {
+        // Remove added retention columns from existing tables
+        $tables = ['log', 'job', 'security_audit_log', 'user_sessions', 'company'];
+
+        foreach ($tables as $tableName) {
+            if ($this->hasTable($tableName)) {
+                $table = $this->table($tableName);
+
+                if ($table->hasColumn('marked_for_deletion')) {
+                    $table->removeColumn('marked_for_deletion');
+                }
+
+                if ($table->hasColumn('retention_until')) {
+                    $table->removeColumn('retention_until');
+                }
+
+                $table->save();
+            }
+        }
+
+        // Remove user activity columns
+        if ($this->hasTable('user')) {
+            $userTable = $this->table('user');
+
+            if ($userTable->hasColumn('retention_until')) {
+                $userTable->removeColumn('retention_until');
+            }
+
+            if ($userTable->hasColumn('inactive_since')) {
+                $userTable->removeColumn('inactive_since');
+            }
+
+            if ($userTable->hasColumn('last_activity_at')) {
+                $userTable->removeColumn('last_activity_at');
+            }
+
+            $userTable->save();
+        }
+
+        // Drop retention tables
+        $this->table('retention_reports')->drop()->save();
+        $this->table('data_archive')->drop()->save();
+        $this->table('retention_cleanup_jobs')->drop()->save();
+        $this->table('data_retention_policies')->drop()->save();
+    }
+
+    /**
+     * Create data retention policies configuration table.
      */
     private function createDataRetentionPoliciesTable(): void
     {
@@ -62,7 +112,7 @@ class GdprPhase4DataRetention extends AbstractMigration
                 'values' => ['hard_delete', 'soft_delete', 'anonymize', 'archive'],
                 'default' => 'soft_delete',
                 'null' => false,
-                'comment' => 'Action to take when retention period expires'
+                'comment' => 'Action to take when retention period expires',
             ]);
         }
 
@@ -82,13 +132,13 @@ class GdprPhase4DataRetention extends AbstractMigration
         if ($this->adapter->getAdapterType() !== 'sqlite') {
             $table->addForeignKey('created_by', 'user', 'id', [
                 'delete' => 'RESTRICT',
-                'update' => 'NO_ACTION'
+                'update' => 'NO_ACTION',
             ])->save();
         }
     }
 
     /**
-     * Create retention cleanup jobs tracking table
+     * Create retention cleanup jobs tracking table.
      */
     private function createRetentionJobsTable(): void
     {
@@ -110,12 +160,12 @@ class GdprPhase4DataRetention extends AbstractMigration
                 ->addColumn('job_type', 'enum', [
                     'values' => ['scheduled_cleanup', 'manual_cleanup', 'grace_period_cleanup'],
                     'null' => false,
-                    'comment' => 'Type of cleanup job'
+                    'comment' => 'Type of cleanup job',
                 ])
                 ->addColumn('status', 'enum', [
                     'values' => ['pending', 'running', 'completed', 'failed', 'cancelled'],
                     'default' => 'pending',
-                    'null' => false
+                    'null' => false,
                 ]);
         }
 
@@ -140,18 +190,18 @@ class GdprPhase4DataRetention extends AbstractMigration
             $table
                 ->addForeignKey('policy_id', 'data_retention_policies', 'id', [
                     'delete' => 'CASCADE',
-                    'update' => 'NO_ACTION'
+                    'update' => 'NO_ACTION',
                 ])
                 ->addForeignKey('started_by', 'user', 'id', [
                     'delete' => 'SET_NULL',
-                    'update' => 'NO_ACTION'
+                    'update' => 'NO_ACTION',
                 ])
                 ->save();
         }
     }
 
     /**
-     * Create data archive table for storing deleted data
+     * Create data archive table for storing deleted data.
      */
     private function createDataArchiveTable(): void
     {
@@ -160,7 +210,6 @@ class GdprPhase4DataRetention extends AbstractMigration
         $unsigned = ($databaseType === 'mysql') ? ['signed' => false] : [];
 
         $table = $this->table('data_archive');
-        $table;
 
         // Add archive_type column - use enum for MySQL/PostgreSQL, string for SQLite
         if ($this->adapter->getAdapterType() === 'sqlite') {
@@ -169,7 +218,7 @@ class GdprPhase4DataRetention extends AbstractMigration
             $table->addColumn('archive_type', 'enum', [
                 'values' => ['pre_deletion', 'anonymization_backup', 'legal_hold'],
                 'null' => false,
-                'comment' => 'Type of archive'
+                'comment' => 'Type of archive',
             ]);
         }
 
@@ -192,18 +241,18 @@ class GdprPhase4DataRetention extends AbstractMigration
             $table
                 ->addForeignKey('retention_job_id', 'retention_cleanup_jobs', 'id', [
                     'delete' => 'SET_NULL',
-                    'update' => 'NO_ACTION'
+                    'update' => 'NO_ACTION',
                 ])
                 ->addForeignKey('archived_by', 'user', 'id', [
                     'delete' => 'RESTRICT',
-                    'update' => 'NO_ACTION'
+                    'update' => 'NO_ACTION',
                 ])
                 ->save();
         }
     }
 
     /**
-     * Create retention reports table
+     * Create retention reports table.
      */
     private function createRetentionReportsTable(): void
     {
@@ -212,7 +261,6 @@ class GdprPhase4DataRetention extends AbstractMigration
         $unsigned = ($databaseType === 'mysql') ? ['signed' => false] : [];
 
         $table = $this->table('retention_reports');
-        $table;
 
         // Add report_type column - use enum for MySQL/PostgreSQL, string for SQLite
         if ($this->adapter->getAdapterType() === 'sqlite') {
@@ -220,7 +268,7 @@ class GdprPhase4DataRetention extends AbstractMigration
         } else {
             $table->addColumn('report_type', 'enum', [
                 'values' => ['daily_summary', 'weekly_summary', 'monthly_summary', 'policy_audit', 'compliance_report'],
-                'null' => false
+                'null' => false,
             ]);
         }
 
@@ -240,25 +288,28 @@ class GdprPhase4DataRetention extends AbstractMigration
         if ($this->adapter->getAdapterType() !== 'sqlite') {
             $table->addForeignKey('generated_by', 'user', 'id', [
                 'delete' => 'RESTRICT',
-                'update' => 'NO_ACTION'
+                'update' => 'NO_ACTION',
             ])->save();
         }
     }
 
     /**
-     * Enhance existing tables with retention-related fields
+     * Enhance existing tables with retention-related fields.
      */
     private function enhanceExistingTablesWithRetentionFields(): void
     {
         // Add retention fields to log table
         if ($this->hasTable('log')) {
             $logTable = $this->table('log');
+
             if (!$logTable->hasColumn('retention_until')) {
                 $logTable->addColumn('retention_until', 'datetime', ['null' => true, 'comment' => 'Calculated retention expiration date']);
             }
+
             if (!$logTable->hasColumn('marked_for_deletion')) {
                 $logTable->addColumn('marked_for_deletion', 'boolean', ['default' => false, 'null' => false, 'comment' => 'Whether record is scheduled for deletion']);
             }
+
             $logTable->addIndex(['retention_until']);
             $logTable->addIndex(['marked_for_deletion']);
             $logTable->save();
@@ -267,12 +318,15 @@ class GdprPhase4DataRetention extends AbstractMigration
         // Add retention fields to job table
         if ($this->hasTable('job')) {
             $jobTable = $this->table('job');
+
             if (!$jobTable->hasColumn('retention_until')) {
                 $jobTable->addColumn('retention_until', 'datetime', ['null' => true, 'comment' => 'Calculated retention expiration date']);
             }
+
             if (!$jobTable->hasColumn('marked_for_deletion')) {
                 $jobTable->addColumn('marked_for_deletion', 'boolean', ['default' => false, 'null' => false, 'comment' => 'Whether record is scheduled for deletion']);
             }
+
             $jobTable->addIndex(['retention_until']);
             $jobTable->addIndex(['marked_for_deletion']);
             $jobTable->save();
@@ -281,26 +335,32 @@ class GdprPhase4DataRetention extends AbstractMigration
         // Add retention fields to security_audit_log table
         if ($this->hasTable('security_audit_log')) {
             $auditTable = $this->table('security_audit_log');
+
             if (!$auditTable->hasColumn('retention_until')) {
                 $auditTable->addColumn('retention_until', 'datetime', ['null' => true, 'comment' => 'Calculated retention expiration date']);
             }
+
             if (!$auditTable->hasColumn('marked_for_deletion')) {
                 $auditTable->addColumn('marked_for_deletion', 'boolean', ['default' => false, 'null' => false, 'comment' => 'Whether record is scheduled for deletion']);
             }
+
             $auditTable->addIndex(['retention_until']);
             $auditTable->addIndex(['marked_for_deletion']);
             $auditTable->save();
         }
 
-        // Add retention fields to user_sessions table  
+        // Add retention fields to user_sessions table
         if ($this->hasTable('user_sessions')) {
             $sessionTable = $this->table('user_sessions');
+
             if (!$sessionTable->hasColumn('retention_until')) {
                 $sessionTable->addColumn('retention_until', 'datetime', ['null' => true, 'comment' => 'Calculated retention expiration date']);
             }
+
             if (!$sessionTable->hasColumn('marked_for_deletion')) {
                 $sessionTable->addColumn('marked_for_deletion', 'boolean', ['default' => false, 'null' => false, 'comment' => 'Whether record is scheduled for deletion']);
             }
+
             $sessionTable->addIndex(['retention_until']);
             $sessionTable->addIndex(['marked_for_deletion']);
             $sessionTable->save();
@@ -309,12 +369,15 @@ class GdprPhase4DataRetention extends AbstractMigration
         // Add retention fields to company table
         if ($this->hasTable('company')) {
             $companyTable = $this->table('company');
+
             if (!$companyTable->hasColumn('retention_until')) {
                 $companyTable->addColumn('retention_until', 'datetime', ['null' => true, 'comment' => 'Calculated retention expiration date']);
             }
+
             if (!$companyTable->hasColumn('marked_for_deletion')) {
                 $companyTable->addColumn('marked_for_deletion', 'boolean', ['default' => false, 'null' => false, 'comment' => 'Whether record is scheduled for deletion']);
             }
+
             $companyTable->addIndex(['retention_until']);
             $companyTable->addIndex(['marked_for_deletion']);
             $companyTable->save();
@@ -323,15 +386,19 @@ class GdprPhase4DataRetention extends AbstractMigration
         // Add retention fields to user table
         if ($this->hasTable('user')) {
             $userTable = $this->table('user');
+
             if (!$userTable->hasColumn('last_activity_at')) {
                 $userTable->addColumn('last_activity_at', 'timestamp', ['null' => true, 'comment' => 'Last user activity timestamp']);
             }
+
             if (!$userTable->hasColumn('inactive_since')) {
                 $userTable->addColumn('inactive_since', 'datetime', ['null' => true, 'comment' => 'Date when user became inactive']);
             }
+
             if (!$userTable->hasColumn('retention_until')) {
                 $userTable->addColumn('retention_until', 'datetime', ['null' => true, 'comment' => 'Calculated retention expiration date']);
             }
+
             $userTable->addIndex(['last_activity_at']);
             $userTable->addIndex(['inactive_since']);
             $userTable->addIndex(['retention_until']);
@@ -340,7 +407,7 @@ class GdprPhase4DataRetention extends AbstractMigration
     }
 
     /**
-     * Insert default retention policies according to GDPR requirements
+     * Insert default retention policies according to GDPR requirements.
      */
     private function insertDefaultRetentionPolicies(): void
     {
@@ -358,7 +425,7 @@ class GdprPhase4DataRetention extends AbstractMigration
                 'deletion_action' => 'anonymize',
                 'legal_basis' => 'GDPR Art. 5(1)(e) - Data minimization principle',
                 'description' => 'Inactive user accounts are anonymized after 3 years of inactivity',
-                'created_by' => $adminUserId
+                'created_by' => $adminUserId,
             ],
             [
                 'policy_name' => 'session_data',
@@ -369,7 +436,7 @@ class GdprPhase4DataRetention extends AbstractMigration
                 'deletion_action' => 'hard_delete',
                 'legal_basis' => 'GDPR Art. 5(1)(e) - Data minimization principle',
                 'description' => 'Session data is deleted after 30 days',
-                'created_by' => $adminUserId
+                'created_by' => $adminUserId,
             ],
             [
                 'policy_name' => 'audit_logs',
@@ -380,7 +447,7 @@ class GdprPhase4DataRetention extends AbstractMigration
                 'deletion_action' => 'archive',
                 'legal_basis' => 'Legal and regulatory requirements for audit trail retention',
                 'description' => 'Security audit logs are archived after 7 years',
-                'created_by' => $adminUserId
+                'created_by' => $adminUserId,
             ],
             [
                 'policy_name' => 'job_execution_logs',
@@ -391,7 +458,7 @@ class GdprPhase4DataRetention extends AbstractMigration
                 'deletion_action' => 'soft_delete',
                 'legal_basis' => 'Business operations and troubleshooting requirements',
                 'description' => 'Job execution logs are soft deleted after 1 year',
-                'created_by' => $adminUserId
+                'created_by' => $adminUserId,
             ],
             [
                 'policy_name' => 'application_logs',
@@ -402,7 +469,7 @@ class GdprPhase4DataRetention extends AbstractMigration
                 'deletion_action' => 'hard_delete',
                 'legal_basis' => 'Business operations and troubleshooting requirements',
                 'description' => 'Application logs are deleted after 1 year',
-                'created_by' => $adminUserId
+                'created_by' => $adminUserId,
             ],
             [
                 'policy_name' => 'company_data_business_relationship',
@@ -413,7 +480,7 @@ class GdprPhase4DataRetention extends AbstractMigration
                 'deletion_action' => 'anonymize',
                 'legal_basis' => 'Legitimate business interests and contract obligations',
                 'description' => 'Company data retained based on active business relationship, anonymized after 5 years of inactivity',
-                'created_by' => $adminUserId
+                'created_by' => $adminUserId,
             ],
             [
                 'policy_name' => 'login_attempts',
@@ -424,52 +491,10 @@ class GdprPhase4DataRetention extends AbstractMigration
                 'deletion_action' => 'hard_delete',
                 'legal_basis' => 'Security monitoring and fraud prevention',
                 'description' => 'Login attempt logs are deleted after 3 months',
-                'created_by' => $adminUserId
-            ]
+                'created_by' => $adminUserId,
+            ],
         ];
 
         $this->table('data_retention_policies')->insert($policies)->saveData();
-    }
-
-    /**
-     * Rollback migration
-     */
-    public function down(): void
-    {
-        // Remove added retention columns from existing tables
-        $tables = ['log', 'job', 'security_audit_log', 'user_sessions', 'company'];
-        foreach ($tables as $tableName) {
-            if ($this->hasTable($tableName)) {
-                $table = $this->table($tableName);
-                if ($table->hasColumn('marked_for_deletion')) {
-                    $table->removeColumn('marked_for_deletion');
-                }
-                if ($table->hasColumn('retention_until')) {
-                    $table->removeColumn('retention_until');
-                }
-                $table->save();
-            }
-        }
-
-        // Remove user activity columns
-        if ($this->hasTable('user')) {
-            $userTable = $this->table('user');
-            if ($userTable->hasColumn('retention_until')) {
-                $userTable->removeColumn('retention_until');
-            }
-            if ($userTable->hasColumn('inactive_since')) {
-                $userTable->removeColumn('inactive_since');
-            }
-            if ($userTable->hasColumn('last_activity_at')) {
-                $userTable->removeColumn('last_activity_at');
-            }
-            $userTable->save();
-        }
-
-        // Drop retention tables
-        $this->table('retention_reports')->drop()->save();
-        $this->table('data_archive')->drop()->save();
-        $this->table('retention_cleanup_jobs')->drop()->save();
-        $this->table('data_retention_policies')->drop()->save();
     }
 }

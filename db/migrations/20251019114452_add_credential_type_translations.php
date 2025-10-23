@@ -33,7 +33,7 @@ final class AddCredentialTypeTranslations extends AbstractMigration
             ->addForeignKey('credential_type_id', 'credential_type', 'id', ['delete' => 'CASCADE', 'update' => 'NO_ACTION'])
             ->create();
 
-        // Create credential_type_field_translations table  
+        // Create credential_type_field_translations table
         $credentialTypeFieldTranslations = $this->table('credential_type_field_translations');
         $credentialTypeFieldTranslations
             ->addColumn('crtypefield_id', 'integer', array_merge(['null' => false], $unsigned))

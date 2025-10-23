@@ -16,8 +16,8 @@ declare(strict_types=1);
 use Phinx\Migration\AbstractMigration;
 
 /**
- * GDPR Phase 3: Security Enhancements Migration
- * 
+ * GDPR Phase 3: Security Enhancements Migration.
+ *
  * This migration implements security features for GDPR compliance:
  * - Two-Factor Authentication
  * - Brute Force Protection
@@ -46,7 +46,76 @@ class GdprPhase3SecurityEnhancements extends AbstractMigration
     }
 
     /**
-     * Create Two-Factor Authentication related tables
+     * Rollback migration.
+     */
+    public function down(): void
+    {
+        // Remove added columns from user table
+        $userTable = $this->table('user');
+
+        if ($userTable->hasColumn('security_settings')) {
+            $userTable->removeColumn('security_settings');
+        }
+
+        if ($userTable->hasColumn('last_login_at')) {
+            $userTable->removeColumn('last_login_at');
+        }
+
+        if ($userTable->hasColumn('last_login_ip')) {
+            $userTable->removeColumn('last_login_ip');
+        }
+
+        if ($userTable->hasColumn('two_factor_enabled')) {
+            $userTable->removeColumn('two_factor_enabled');
+        }
+
+        if ($userTable->hasColumn('locked_until')) {
+            $userTable->removeColumn('locked_until');
+        }
+
+        if ($userTable->hasColumn('failed_login_attempts')) {
+            $userTable->removeColumn('failed_login_attempts');
+        }
+
+        if ($userTable->hasColumn('password_expires_at')) {
+            $userTable->removeColumn('password_expires_at');
+        }
+
+        if ($userTable->hasColumn('password_changed_at')) {
+            $userTable->removeColumn('password_changed_at');
+        }
+
+        $userTable->save();
+
+        // Remove added columns from credential table
+        if ($this->hasTable('credential')) {
+            $credentialTable = $this->table('credential');
+
+            if ($credentialTable->hasColumn('encryption_key_id')) {
+                $credentialTable->removeColumn('encryption_key_id');
+            }
+
+            if ($credentialTable->hasColumn('encrypted_data')) {
+                $credentialTable->removeColumn('encrypted_data');
+            }
+
+            $credentialTable->save();
+        }
+
+        // Drop security tables
+        $this->table('ip_whitelist')->drop()->save();
+        $this->table('api_rate_limits')->drop()->save();
+        $this->table('encryption_keys')->drop()->save();
+        $this->table('user_sessions')->drop()->save();
+        $this->table('security_audit_log')->drop()->save();
+        $this->table('user_role_assignments')->drop()->save();
+        $this->table('user_roles')->drop()->save();
+        $this->table('login_attempts')->drop()->save();
+        $this->table('user_2fa_secrets')->drop()->save();
+    }
+
+    /**
+     * Create Two-Factor Authentication related tables.
      */
     private function createTwoFactorAuthTables(): void
     {
@@ -71,13 +140,13 @@ class GdprPhase3SecurityEnhancements extends AbstractMigration
         if ($this->adapter->getAdapterType() !== 'sqlite') {
             $table->addForeignKey('user_id', 'user', 'id', [
                 'delete' => 'CASCADE',
-                'update' => 'NO_ACTION'
+                'update' => 'NO_ACTION',
             ])->save();
         }
     }
 
     /**
-     * Create Brute Force Protection tables
+     * Create Brute Force Protection tables.
      */
     private function createBruteForceProtectionTables(): void
     {
@@ -98,7 +167,7 @@ class GdprPhase3SecurityEnhancements extends AbstractMigration
     }
 
     /**
-     * Create Role-Based Access Control tables
+     * Create Role-Based Access Control tables.
      */
     private function createRoleBasedAccessControlTables(): void
     {
@@ -132,22 +201,22 @@ class GdprPhase3SecurityEnhancements extends AbstractMigration
         if ($this->adapter->getAdapterType() !== 'sqlite') {
             $table->addForeignKey('user_id', 'user', 'id', [
                 'delete' => 'CASCADE',
-                'update' => 'NO_ACTION'
+                'update' => 'NO_ACTION',
             ]);
             $table->addForeignKey('role_id', 'user_roles', 'id', [
                 'delete' => 'CASCADE',
-                'update' => 'NO_ACTION'
+                'update' => 'NO_ACTION',
             ]);
             $table->addForeignKey('assigned_by', 'user', 'id', [
                 'delete' => 'CASCADE',
-                'update' => 'NO_ACTION'
+                'update' => 'NO_ACTION',
             ]);
             $table->save();
         }
     }
 
     /**
-     * Create Security Audit tables
+     * Create Security Audit tables.
      */
     private function createSecurityAuditTables(): void
     {
@@ -171,7 +240,7 @@ class GdprPhase3SecurityEnhancements extends AbstractMigration
         } else {
             $table->addColumn('severity', 'enum', ['values' => ['low', 'medium', 'high', 'critical'], 'default' => 'medium']);
         }
-        
+
         $table->addColumn('created_at', 'timestamp', ['default' => 'CURRENT_TIMESTAMP'])
             ->addIndex(['event_type'])
             ->addIndex(['severity'])
@@ -183,13 +252,13 @@ class GdprPhase3SecurityEnhancements extends AbstractMigration
         if ($this->adapter->getAdapterType() !== 'sqlite') {
             $table->addForeignKey('user_id', 'user', 'id', [
                 'delete' => 'SET_NULL',
-                'update' => 'NO_ACTION'
+                'update' => 'NO_ACTION',
             ])->save();
         }
     }
 
     /**
-     * Create Session Security tables
+     * Create Session Security tables.
      */
     private function createSessionSecurityTables(): void
     {
@@ -218,13 +287,13 @@ class GdprPhase3SecurityEnhancements extends AbstractMigration
         if ($this->adapter->getAdapterType() !== 'sqlite') {
             $table->addForeignKey('user_id', 'user', 'id', [
                 'delete' => 'CASCADE',
-                'update' => 'NO_ACTION'
+                'update' => 'NO_ACTION',
             ])->save();
         }
     }
 
     /**
-     * Create Data Encryption tables
+     * Create Data Encryption tables.
      */
     private function createDataEncryptionTables(): void
     {
@@ -243,7 +312,7 @@ class GdprPhase3SecurityEnhancements extends AbstractMigration
     }
 
     /**
-     * Create API Rate Limiting tables
+     * Create API Rate Limiting tables.
      */
     private function createApiRateLimitingTables(): void
     {
@@ -263,7 +332,7 @@ class GdprPhase3SecurityEnhancements extends AbstractMigration
     }
 
     /**
-     * Create IP Whitelisting tables
+     * Create IP Whitelisting tables.
      */
     private function createIpWhitelistTables(): void
     {
@@ -290,52 +359,52 @@ class GdprPhase3SecurityEnhancements extends AbstractMigration
         if ($this->adapter->getAdapterType() !== 'sqlite') {
             $table->addForeignKey('user_id', 'user', 'id', [
                 'delete' => 'CASCADE',
-                'update' => 'NO_ACTION'
+                'update' => 'NO_ACTION',
             ]);
             $table->addForeignKey('created_by', 'user', 'id', [
                 'delete' => 'CASCADE',
-                'update' => 'NO_ACTION'
+                'update' => 'NO_ACTION',
             ]);
             $table->save();
         }
     }
 
     /**
-     * Enhance existing User table with security columns
+     * Enhance existing User table with security columns.
      */
     private function enhanceUserTable(): void
     {
         $table = $this->table('user');
-        
+
         // Check if columns already exist before adding them
         if (!$table->hasColumn('password_changed_at')) {
             $table->addColumn('password_changed_at', 'timestamp', ['null' => true, 'after' => 'password']);
         }
-        
+
         if (!$table->hasColumn('password_expires_at')) {
             $table->addColumn('password_expires_at', 'timestamp', ['null' => true, 'after' => 'password_changed_at']);
         }
-        
+
         if (!$table->hasColumn('failed_login_attempts')) {
             $table->addColumn('failed_login_attempts', 'integer', ['default' => 0, 'null' => false, 'after' => 'password_expires_at']);
         }
-        
+
         if (!$table->hasColumn('locked_until')) {
             $table->addColumn('locked_until', 'timestamp', ['null' => true, 'after' => 'failed_login_attempts']);
         }
-        
+
         if (!$table->hasColumn('two_factor_enabled')) {
             $table->addColumn('two_factor_enabled', 'boolean', ['default' => false, 'null' => false, 'after' => 'locked_until']);
         }
-        
+
         if (!$table->hasColumn('last_login_ip')) {
             $table->addColumn('last_login_ip', 'string', ['limit' => 45, 'null' => true, 'after' => 'two_factor_enabled']);
         }
-        
+
         if (!$table->hasColumn('last_login_at')) {
             $table->addColumn('last_login_at', 'timestamp', ['null' => true, 'after' => 'last_login_ip']);
         }
-        
+
         if (!$table->hasColumn('security_settings')) {
             $table->addColumn('security_settings', 'json', ['null' => true, 'after' => 'last_login_at']);
         }
@@ -350,7 +419,7 @@ class GdprPhase3SecurityEnhancements extends AbstractMigration
     }
 
     /**
-     * Enhance existing Credential table with encryption support
+     * Enhance existing Credential table with encryption support.
      */
     private function enhanceCredentialsTable(): void
     {
@@ -358,13 +427,13 @@ class GdprPhase3SecurityEnhancements extends AbstractMigration
             // Check if the database is MySQL to handle unsigned integers
             $databaseType = $this->getAdapter()->getOption('adapter');
             $unsigned = ($databaseType === 'mysql') ? ['signed' => false] : [];
-            
+
             $table = $this->table('credential');
-            
+
             if (!$table->hasColumn('encrypted_data')) {
                 $table->addColumn('encrypted_data', 'text', ['null' => true, 'after' => 'value']);
             }
-            
+
             if (!$table->hasColumn('encryption_key_id')) {
                 $table->addColumn('encryption_key_id', 'integer', array_merge(['null' => true, 'after' => 'encrypted_data'], $unsigned));
             }
@@ -375,14 +444,14 @@ class GdprPhase3SecurityEnhancements extends AbstractMigration
             if ($this->adapter->getAdapterType() !== 'sqlite') {
                 $table->addForeignKey('encryption_key_id', 'encryption_keys', 'id', [
                     'delete' => 'SET_NULL',
-                    'update' => 'NO_ACTION'
+                    'update' => 'NO_ACTION',
                 ])->save();
             }
         }
     }
 
     /**
-     * Insert default roles
+     * Insert default roles.
      */
     private function insertDefaultRoles(): void
     {
@@ -395,8 +464,8 @@ class GdprPhase3SecurityEnhancements extends AbstractMigration
                     'roles' => ['create', 'read', 'update', 'delete'],
                     'security' => ['read', 'update'],
                     'system' => ['read', 'update', 'backup'],
-                    'audit' => ['read']
-                ])
+                    'audit' => ['read'],
+                ]),
             ],
             [
                 'name' => 'user',
@@ -404,8 +473,8 @@ class GdprPhase3SecurityEnhancements extends AbstractMigration
                 'permissions' => json_encode([
                     'profile' => ['read', 'update'],
                     'jobs' => ['create', 'read', 'update'],
-                    'companies' => ['create', 'read', 'update']
-                ])
+                    'companies' => ['create', 'read', 'update'],
+                ]),
             ],
             [
                 'name' => 'viewer',
@@ -413,9 +482,9 @@ class GdprPhase3SecurityEnhancements extends AbstractMigration
                 'permissions' => json_encode([
                     'profile' => ['read'],
                     'jobs' => ['read'],
-                    'companies' => ['read']
-                ])
-            ]
+                    'companies' => ['read'],
+                ]),
+            ],
         ];
 
         $this->table('user_roles')->insert($roles)->saveData();
@@ -424,64 +493,7 @@ class GdprPhase3SecurityEnhancements extends AbstractMigration
         $this->table('encryption_keys')->insert([
             'key_name' => 'credentials',
             'key_data' => 'PLACEHOLDER_KEY_TO_BE_REPLACED',
-            'algorithm' => 'AES-256-GCM'
+            'algorithm' => 'AES-256-GCM',
         ])->saveData();
-    }
-
-    /**
-     * Rollback migration
-     */
-    public function down(): void
-    {
-        // Remove added columns from user table
-        $userTable = $this->table('user');
-        if ($userTable->hasColumn('security_settings')) {
-            $userTable->removeColumn('security_settings');
-        }
-        if ($userTable->hasColumn('last_login_at')) {
-            $userTable->removeColumn('last_login_at');
-        }
-        if ($userTable->hasColumn('last_login_ip')) {
-            $userTable->removeColumn('last_login_ip');
-        }
-        if ($userTable->hasColumn('two_factor_enabled')) {
-            $userTable->removeColumn('two_factor_enabled');
-        }
-        if ($userTable->hasColumn('locked_until')) {
-            $userTable->removeColumn('locked_until');
-        }
-        if ($userTable->hasColumn('failed_login_attempts')) {
-            $userTable->removeColumn('failed_login_attempts');
-        }
-        if ($userTable->hasColumn('password_expires_at')) {
-            $userTable->removeColumn('password_expires_at');
-        }
-        if ($userTable->hasColumn('password_changed_at')) {
-            $userTable->removeColumn('password_changed_at');
-        }
-        $userTable->save();
-
-        // Remove added columns from credential table
-        if ($this->hasTable('credential')) {
-            $credentialTable = $this->table('credential');
-            if ($credentialTable->hasColumn('encryption_key_id')) {
-                $credentialTable->removeColumn('encryption_key_id');
-            }
-            if ($credentialTable->hasColumn('encrypted_data')) {
-                $credentialTable->removeColumn('encrypted_data');
-            }
-            $credentialTable->save();
-        }
-
-        // Drop security tables
-        $this->table('ip_whitelist')->drop()->save();
-        $this->table('api_rate_limits')->drop()->save();
-        $this->table('encryption_keys')->drop()->save();
-        $this->table('user_sessions')->drop()->save();
-        $this->table('security_audit_log')->drop()->save();
-        $this->table('user_role_assignments')->drop()->save();
-        $this->table('user_roles')->drop()->save();
-        $this->table('login_attempts')->drop()->save();
-        $this->table('user_2fa_secrets')->drop()->save();
     }
 }

@@ -41,12 +41,12 @@ class GdprUserDeletion extends AbstractMigration
                 ->addColumn('deletion_type', 'enum', [
                     'values' => ['soft', 'hard', 'anonymize'],
                     'default' => 'soft',
-                    'null' => false
+                    'null' => false,
                 ])
                 ->addColumn('status', 'enum', [
                     'values' => ['pending', 'approved', 'rejected', 'completed'],
                     'default' => 'pending',
-                    'null' => false
+                    'null' => false,
                 ]);
         }
 
@@ -76,7 +76,7 @@ class GdprUserDeletion extends AbstractMigration
         } else {
             $deletionAudit->addColumn('action', 'enum', [
                 'values' => ['deleted', 'anonymized', 'retained'],
-                'null' => false
+                'null' => false,
             ]);
         }
 
@@ -92,15 +92,19 @@ class GdprUserDeletion extends AbstractMigration
 
         // Add soft delete columns to user table if they don't exist
         $userTable = $this->table('user');
+
         if (!$userTable->hasColumn('deleted_at')) {
             $userTable->addColumn('deleted_at', 'datetime', ['null' => true]);
         }
+
         if (!$userTable->hasColumn('deletion_reason')) {
             $userTable->addColumn('deletion_reason', 'string', ['limit' => 255, 'null' => true]);
         }
+
         if (!$userTable->hasColumn('anonymized_at')) {
             $userTable->addColumn('anonymized_at', 'datetime', ['null' => true]);
         }
+
         $userTable->save();
 
         // Foreign key constraints if not SQLite
