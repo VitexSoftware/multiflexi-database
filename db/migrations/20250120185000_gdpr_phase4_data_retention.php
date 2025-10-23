@@ -38,56 +38,6 @@ class GdprPhase4DataRetention extends AbstractMigration
     }
 
     /**
-     * Rollback migration.
-     */
-    public function down(): void
-    {
-        // Remove added retention columns from existing tables
-        $tables = ['log', 'job', 'security_audit_log', 'user_sessions', 'company'];
-
-        foreach ($tables as $tableName) {
-            if ($this->hasTable($tableName)) {
-                $table = $this->table($tableName);
-
-                if ($table->hasColumn('marked_for_deletion')) {
-                    $table->removeColumn('marked_for_deletion');
-                }
-
-                if ($table->hasColumn('retention_until')) {
-                    $table->removeColumn('retention_until');
-                }
-
-                $table->save();
-            }
-        }
-
-        // Remove user activity columns
-        if ($this->hasTable('user')) {
-            $userTable = $this->table('user');
-
-            if ($userTable->hasColumn('retention_until')) {
-                $userTable->removeColumn('retention_until');
-            }
-
-            if ($userTable->hasColumn('inactive_since')) {
-                $userTable->removeColumn('inactive_since');
-            }
-
-            if ($userTable->hasColumn('last_activity_at')) {
-                $userTable->removeColumn('last_activity_at');
-            }
-
-            $userTable->save();
-        }
-
-        // Drop retention tables
-        $this->table('retention_reports')->drop()->save();
-        $this->table('data_archive')->drop()->save();
-        $this->table('retention_cleanup_jobs')->drop()->save();
-        $this->table('data_retention_policies')->drop()->save();
-    }
-
-    /**
      * Create data retention policies configuration table.
      */
     private function createDataRetentionPoliciesTable(): void
