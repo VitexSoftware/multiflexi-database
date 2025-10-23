@@ -30,12 +30,16 @@ final class Token extends AbstractMigration
      */
     public function change(): void
     {
+        // Check if the database is MySQL to handle unsigned integers
+        $databaseType = $this->getAdapter()->getOption('adapter');
+        $unsigned = ($databaseType === 'mysql') ? ['signed' => false] : [];
+
         $table = $this->table('token');
         $table
             ->addColumn('token', 'string', ['limit' => 64])
             ->addColumn('start', 'datetime', ['default' => 'CURRENT_TIMESTAMP'])
             ->addColumn('until', 'datetime', ['null' => true])
-            ->addColumn('user_id', 'integer', ['null' => false])
+            ->addColumn('user_id', 'integer', array_merge(['null' => false], $unsigned))
             ->addForeignKey('user_id', 'user', 'id', ['constraint' => 'user_must_exist'])
             ->create();
     }

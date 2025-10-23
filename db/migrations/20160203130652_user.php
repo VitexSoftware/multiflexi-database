@@ -19,6 +19,10 @@ class User extends AbstractMigration
 {
     public function change(): void
     {
+        // Check if the database is MySQL to handle unsigned integers
+        $databaseType = $this->getAdapter()->getOption('adapter');
+        $unsigned = ($databaseType === 'mysql') ? ['signed' => false] : [];
+
         // Migration for table users
         $table = $this->table('user');
         $table
@@ -37,7 +41,7 @@ class User extends AbstractMigration
 
         if ($this->adapter->getAdapterType() !== 'sqlite') {
             $table
-                ->changeColumn('id', 'integer', ['identity' => true])
+                ->changeColumn('id', 'integer', array_merge(['identity' => true], $unsigned))
                 ->save();
         }
     }

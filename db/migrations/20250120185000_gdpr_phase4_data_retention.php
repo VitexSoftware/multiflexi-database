@@ -119,7 +119,7 @@ class GdprPhase4DataRetention extends AbstractMigration
         $table->addColumn('legal_basis', 'string', ['limit' => 255, 'null' => true, 'comment' => 'Legal basis for retention period'])
             ->addColumn('description', 'text', ['null' => true, 'comment' => 'Human-readable description of the policy'])
             ->addColumn('enabled', 'boolean', ['default' => true, 'null' => false, 'comment' => 'Whether this policy is active'])
-            ->addColumn('created_by', 'integer', array_merge(['null' => false], $unsigned))
+            ->addColumn('created_by', 'integer', array_merge(['null' => true], $unsigned))
             ->addColumn('created_at', 'timestamp', ['default' => 'CURRENT_TIMESTAMP'])
             ->addColumn('updated_at', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
             ->addIndex(['policy_name'], ['unique' => true])
@@ -131,7 +131,7 @@ class GdprPhase4DataRetention extends AbstractMigration
         // Add foreign key constraint if not SQLite
         if ($this->adapter->getAdapterType() !== 'sqlite') {
             $table->addForeignKey('created_by', 'user', 'id', [
-                'delete' => 'RESTRICT',
+                'delete' => 'SET_NULL',
                 'update' => 'NO_ACTION',
             ])->save();
         }
@@ -412,8 +412,9 @@ class GdprPhase4DataRetention extends AbstractMigration
     private function insertDefaultRetentionPolicies(): void
     {
         // Get first admin user ID for created_by field
+        // If no users exist yet, use NULL (created_by column allows null)
         $adminUser = $this->fetchRow('SELECT id FROM user WHERE enabled = 1 ORDER BY id LIMIT 1');
-        $adminUserId = $adminUser['id'] ?? 1;
+        $adminUserId = $adminUser['id'] ?? null;
 
         $policies = [
             [

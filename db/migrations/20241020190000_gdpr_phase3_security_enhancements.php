@@ -133,16 +133,17 @@ class GdprPhase3SecurityEnhancements extends AbstractMigration
             ->addColumn('created_at', 'timestamp', ['default' => 'CURRENT_TIMESTAMP'])
             ->addColumn('last_used', 'timestamp', ['null' => true])
             ->addColumn('recovery_codes_used', 'json', ['null' => true])
-            ->addIndex(['user_id'], ['unique' => true])
-            ->create();
+            ->addIndex(['user_id'], ['unique' => true]);
 
-        // Add foreign key constraint if not SQLite
+        // Add foreign key constraint before create() if not SQLite
         if ($this->adapter->getAdapterType() !== 'sqlite') {
             $table->addForeignKey('user_id', 'user', 'id', [
                 'delete' => 'CASCADE',
                 'update' => 'NO_ACTION',
-            ])->save();
+            ]);
         }
+
+        $table->create();
     }
 
     /**
