@@ -19,21 +19,22 @@ class Company extends AbstractMigration
 {
     public function change(): void
     {
-        $table = $this->table('company');
+        // Company table - Stores information about companies/clients using the system
+        $table = $this->table('company', ['comment' => 'Companies/clients using the system with their AbraFlexi configurations']);
         $table
-            ->addColumn('enabled', 'boolean', ['default' => false])
-            ->addColumn('settings', 'text', ['null' => true])
-            ->addColumn('logo', 'text', ['null' => true])
-            ->addColumn('abraflexi', 'integer', ['limit' => 128])
-            ->addColumn('nazev', 'string', ['null' => true, 'limit' => 32])
-            ->addColumn('ic', 'string', ['null' => true, 'limit' => 32])
-            ->addColumn('company', 'string', ['comment' => 'Company Code'])
-            ->addColumn('rw', 'boolean', ['comment' => 'Write permissions'])
-            ->addColumn('setup', 'boolean', ['comment' => 'SetUP done'])
-            ->addColumn('webhook', 'boolean', ['comment' => 'Webhook ready'])
-            ->addColumn('DatCreate', 'datetime', [])
-            ->addColumn('DatUpdate', 'datetime', ['null' => true])
-            ->addIndex(['abraflexi', 'company'], ['unique' => true])
+            ->addColumn('enabled', 'boolean', ['default' => false, 'comment' => 'Company account status - whether company can use services'])
+            ->addColumn('settings', 'text', ['null' => true, 'comment' => 'JSON serialized company-specific configuration'])
+            ->addColumn('logo', 'text', ['null' => true, 'comment' => 'Company logo image data (base64 encoded)'])
+            ->addColumn('abraflexi', 'integer', ['limit' => 128, 'comment' => 'Foreign key to abraflexis table - which AbraFlexi instance this company uses'])
+            ->addColumn('nazev', 'string', ['null' => true, 'limit' => 32, 'comment' => 'Company name in Czech (nazev = name)'])
+            ->addColumn('ic', 'string', ['null' => true, 'limit' => 32, 'comment' => 'Company identification number (IČ in Czech)'])
+            ->addColumn('company', 'string', ['comment' => 'Unique company identifier/code for system references'])
+            ->addColumn('rw', 'boolean', ['comment' => 'Write permissions - whether this company has write access to modify data'])
+            ->addColumn('setup', 'boolean', ['comment' => 'Flag indicating if initial company setup is completed'])
+            ->addColumn('webhook', 'boolean', ['comment' => 'Flag indicating if webhook integration is configured'])
+            ->addColumn('DatCreate', 'datetime', ['comment' => 'Timestamp when company record was created'])
+            ->addColumn('DatUpdate', 'datetime', ['null' => true, 'comment' => 'Last modification timestamp'])
+            ->addIndex(['abraflexi', 'company'], ['unique' => true])             // Ensure unique company code per AbraFlexi instance
             ->create();
 
         //        if ($this->adapter->getAdapterType() != 'sqlite') {

@@ -32,8 +32,8 @@ final class JobOutput extends AbstractMigration
     {
         $table = $this->table('job');
         $table
-            ->addColumn('stdout', 'text', ['null' => true, 'default' => null])
-            ->addColumn('stderr', 'text', ['null' => true, 'default' => null])
+            ->addColumn('stdout', 'text', ['null' => true, 'default' => null, 'comment' => 'Standard output captured from the job execution'])
+            ->addColumn('stderr', 'text', ['null' => true, 'default' => null, 'comment' => 'Standard error output captured from the job execution'])
             ->save();
     }
 }

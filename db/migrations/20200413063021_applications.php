@@ -19,15 +19,15 @@ class Applications extends AbstractMigration
 {
     public function change(): void
     {
-        $table = $this->table('apps');
+        $table = $this->table('apps', ['comment' => 'Available applications that can be deployed and executed in the system']);
         $table
-            ->addColumn('enabled', 'boolean', ['default' => false])
-            ->addColumn('image', 'text', ['null' => true])
-            ->addColumn('nazev', 'string', ['null' => true, 'limit' => 32])
-            ->addColumn('popis', 'string', ['comment' => 'App Description'])
-            ->addColumn('executable', 'string', ['comment' => '/usr/bin/runme'])
-            ->addColumn('DatCreate', 'datetime', [])
-            ->addColumn('DatUpdate', 'datetime', ['null' => true])
+            ->addColumn('enabled', 'boolean', ['default' => false, 'comment' => 'Whether this application is active and can be deployed'])
+            ->addColumn('image', 'text', ['null' => true, 'comment' => 'Application icon/logo image data (base64 encoded)'])
+            ->addColumn('nazev', 'string', ['null' => true, 'limit' => 32, 'comment' => 'Application name in Czech (nazev = name)'])
+            ->addColumn('popis', 'string', ['comment' => 'Application description explaining its purpose and functionality'])
+            ->addColumn('executable', 'string', ['comment' => 'Path to executable file or command to run this application'])
+            ->addColumn('DatCreate', 'datetime', ['comment' => 'Timestamp when application was registered'])
+            ->addColumn('DatUpdate', 'datetime', ['null' => true, 'comment' => 'Last modification timestamp'])
             ->addIndex(['nazev'], ['unique' => true])
             ->addIndex(['executable'], ['unique' => true])
             ->create();

@@ -21,7 +21,7 @@ final class ConfFieldRequied extends AbstractMigration
     {
         $table = $this->table('conffield');
         $table
-            ->addColumn('required', 'boolean', ['null' => false, 'default' => false])
+            ->addColumn('required', 'boolean', ['null' => false, 'default' => false, 'comment' => 'Whether this configuration field is mandatory and must be provided'])
             ->save();
     }
 }

@@ -34,12 +34,12 @@ final class Token extends AbstractMigration
         $databaseType = $this->getAdapter()->getOption('adapter');
         $unsigned = ($databaseType === 'mysql') ? ['signed' => false] : [];
 
-        $table = $this->table('token');
+        $table = $this->table('token', ['comment' => 'Authentication tokens for API access and session management']);
         $table
-            ->addColumn('token', 'string', ['limit' => 64])
-            ->addColumn('start', 'datetime', ['default' => 'CURRENT_TIMESTAMP'])
-            ->addColumn('until', 'datetime', ['null' => true])
-            ->addColumn('user_id', 'integer', array_merge(['null' => false], $unsigned))
+            ->addColumn('token', 'string', ['limit' => 64, 'comment' => 'Authentication token string (usually random hash)'])
+            ->addColumn('start', 'datetime', ['default' => 'CURRENT_TIMESTAMP', 'comment' => 'Token creation/activation timestamp'])
+            ->addColumn('until', 'datetime', ['null' => true, 'comment' => 'Token expiration timestamp (null = never expires)'])
+            ->addColumn('user_id', 'integer', array_merge(['null' => false, 'comment' => 'Foreign key to user table - which user owns this token'], $unsigned))
             ->addForeignKey('user_id', 'user', 'id', ['constraint' => 'user_must_exist'])
             ->create();
     }

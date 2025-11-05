@@ -23,6 +23,6 @@ class CompanysOwnerIsCustomer extends AbstractMigration
     public function change(): void
     {
         $refTable = $this->table('company');
-        $refTable->addColumn('customer', 'integer', ['null' => true])->addIndex(['customer'])->save();
+        $refTable->addColumn('customer', 'integer', ['null' => true, 'comment' => 'Foreign key to customer table - identifies the owner/primary contact of this company'])->addIndex(['customer'])->save();
     }
 }

@@ -34,13 +34,13 @@ final class Job extends AbstractMigration
         $databaseType = $this->getAdapter()->getOption('adapter');
         $unsigned = ($databaseType === 'mysql') ? ['signed' => false] : [];
 
-        // Create the job table
-        $table = $this->table('job');
-        $table->addColumn('app_id', 'integer', array_merge(['null' => false], $unsigned))
-            ->addColumn('begin', 'datetime', ['default' => 'CURRENT_TIMESTAMP'])
-            ->addColumn('end', 'datetime', ['null' => true])
-            ->addColumn('company_id', 'integer', array_merge(['null' => false], $unsigned))
-            ->addColumn('exitcode', 'integer', array_merge(['null' => true]))
+        // Create the job table - Records of application execution instances
+        $table = $this->table('job', ['comment' => 'Job execution records - tracks each time an application is run']);
+        $table->addColumn('app_id', 'integer', array_merge(['null' => false, 'comment' => 'Foreign key to apps table - which application was executed'], $unsigned))
+            ->addColumn('begin', 'datetime', ['default' => 'CURRENT_TIMESTAMP', 'comment' => 'Timestamp when job execution started'])
+            ->addColumn('end', 'datetime', ['null' => true, 'comment' => 'Timestamp when job execution completed (null if still running)'])
+            ->addColumn('company_id', 'integer', array_merge(['null' => false, 'comment' => 'Foreign key to company table - for which company this job ran'], $unsigned))
+            ->addColumn('exitcode', 'integer', array_merge(['null' => true, 'comment' => 'Exit code returned by the application (0=success, non-zero=error)']))
             ->addForeignKey('app_id', 'apps', ['id'], ['constraint' => 'job_app_must_exist'])
             ->addForeignKey('company_id', 'company', ['id'], ['constraint' => 'job_company_must_exist']);
         $table->create();

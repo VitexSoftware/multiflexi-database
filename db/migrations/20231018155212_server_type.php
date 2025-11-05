@@ -32,7 +32,7 @@ final class ServerType extends AbstractMigration
     {
         $table = $this->table('servers');
         $table
-            ->addColumn('type', 'text', ['comment' => 'Server type. ABRAFLEXI|POHODA', 'default' => 'ABRAFLEXI', 'null' => true])
+            ->addColumn('type', 'text', ['comment' => 'Server type identifier (ABRAFLEXI for AbraFlexi ERP servers, POHODA for Money S3/Pohoda servers)', 'default' => 'ABRAFLEXI', 'null' => true])
             ->update();
     }
 }

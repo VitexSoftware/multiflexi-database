@@ -15,7 +15,7 @@ declare(strict_types=1);
 
 use Phinx\Migration\AbstractMigration;
 
-final class RuntemplateActive extends AbstractMigration
+final class CredentialIndexCleanup extends AbstractMigration
 {
     /**
      * Change Method.
@@ -30,8 +30,16 @@ final class RuntemplateActive extends AbstractMigration
      */
     public function change(): void
     {
-        $table = $this->table('runtemplate');
-        $table->addColumn('active', 'boolean', ['default' => true, 'comment' => 'Whether this run template is active and should be scheduled for execution'])
-            ->update();
+        $table = $this->table('crtypefield');
+
+        if ($table->hasIndex(['credential_type_id', 'helper'])) {
+            $table->removeIndex(['credential_type_id', 'helper']);
+        }
+
+        if ($table->hasIndex(['credential_type_id'])) {
+            $table->removeIndex(['credential_type_id']);
+        }
+
+        $table->update();
     }
 }

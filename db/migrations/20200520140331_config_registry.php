@@ -22,21 +22,21 @@ class ConfigRegistry extends AbstractMigration
         $databaseType = $this->getAdapter()->getOption('adapter');
         $unsigned = ($databaseType === 'mysql') ? ['signed' => false] : [];
 
-        $customFields = $this->table('conffield');
-        $customFields->addColumn('app_id', 'integer', array_merge(['null' => false], $unsigned))
-            ->addColumn('keyname', 'string', ['length' => 64])
-            ->addColumn('type', 'string', ['length' => 32])
-            ->addColumn('description', 'string', ['length' => 1024])
+        $customFields = $this->table('conffield', ['comment' => 'Configuration field definitions for applications - defines what configuration options each app has']);
+        $customFields->addColumn('app_id', 'integer', array_merge(['null' => false, 'comment' => 'Foreign key to apps table'], $unsigned))
+            ->addColumn('keyname', 'string', ['length' => 64, 'comment' => 'Configuration key name (e.g., database_host, api_key)'])
+            ->addColumn('type', 'string', ['length' => 32, 'comment' => 'Configuration value type (string, integer, boolean, etc.)'])
+            ->addColumn('description', 'string', ['length' => 1024, 'comment' => 'Human-readable description of what this configuration option does'])
             ->addIndex(['app_id', 'keyname'], ['unique' => true])
             ->addForeignKey('app_id', 'apps', 'id', ['constraint' => 'cff-app_must_exist', 'delete' => 'CASCADE']);
         $customFields->create();
 
-        $configs = $this->table('configuration');
-        $configs->addColumn('app_id', 'integer', array_merge(['null' => false], $unsigned))
-            ->addColumn('company_id', 'integer', array_merge(['null' => false], $unsigned))
-            ->addColumn('key', 'string', ['length' => 64])
-            ->addColumn('value', 'string', ['length' => 1024])
-            ->addColumn('runtemplate_id', 'integer', array_merge(['null' => false], $unsigned))
+        $configs = $this->table('configuration', ['comment' => 'Actual configuration values for applications per company and run template']);
+        $configs->addColumn('app_id', 'integer', array_merge(['null' => false, 'comment' => 'Foreign key to apps table'], $unsigned))
+            ->addColumn('company_id', 'integer', array_merge(['null' => false, 'comment' => 'Foreign key to company table'], $unsigned))
+            ->addColumn('key', 'string', ['length' => 64, 'comment' => 'Configuration key name matching conffield.keyname'])
+            ->addColumn('value', 'string', ['length' => 1024, 'comment' => 'Configuration value for this key'])
+            ->addColumn('runtemplate_id', 'integer', array_merge(['null' => false, 'comment' => 'Foreign key to runtemplate table'], $unsigned))
             ->addIndex(['app_id', 'company_id'])
             ->addIndex(['runtemplate_id', 'key'], ['unique' => true])
             ->addForeignKey('app_id', 'apps', ['id'], ['constraint' => 'cfg-app_must_exist', 'delete' => 'CASCADE'])

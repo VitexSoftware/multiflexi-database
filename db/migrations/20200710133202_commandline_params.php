@@ -32,7 +32,7 @@ final class CommandlineParams extends AbstractMigration
     {
         $table = $this->table('apps');
         $table
-            ->addColumn('cmdparams', 'string', ['null' => true, 'limit' => 256])
+            ->addColumn('cmdparams', 'string', ['null' => true, 'limit' => 256, 'comment' => 'Default command line parameters to pass when executing this application'])
             ->save();
     }
 }

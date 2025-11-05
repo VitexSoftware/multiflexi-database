@@ -32,7 +32,7 @@ class AppSetup extends AbstractMigration
     {
         $table = $this->table('apps');
         $table
-            ->addColumn('setup', 'string', ['null' => true, 'limit' => 256])
+            ->addColumn('setup', 'string', ['null' => true, 'limit' => 256, 'comment' => 'Setup command or script to run when installing this application'])
             ->save();
     }
 }

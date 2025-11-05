@@ -19,15 +19,15 @@ final class Logger extends AbstractMigration
 {
     public function change(): void
     {
-        // create the table
-        $table = $this->table('log');
-        $table->addColumn('company_id', 'integer', ['null' => true, 'comment' => 'applied to company'])
-            ->addColumn('apps_id', 'integer', ['null' => true, 'comment' => 'application used'])
-            ->addColumn('user_id', 'integer', ['null' => true, 'comment' => 'signed user'])
-            ->addColumn('severity', 'string', ['comment' => 'message type'])
-            ->addColumn('venue', 'string', ['comment' => 'message producer'])
-            ->addColumn('message', 'text', ['comment' => 'main text'])
-            ->addColumn('created', 'timestamp', ['default' => 'CURRENT_TIMESTAMP'])
+        // create the log table - System-wide logging for application events and messages
+        $table = $this->table('log', ['comment' => 'System-wide logging table for tracking application events and user actions']);
+        $table->addColumn('company_id', 'integer', ['null' => true, 'comment' => 'Foreign key to company table - which company this log entry applies to'])
+            ->addColumn('apps_id', 'integer', ['null' => true, 'comment' => 'Foreign key to apps table - which application generated this log'])
+            ->addColumn('user_id', 'integer', ['null' => true, 'comment' => 'Foreign key to user table - which user was signed in when this happened'])
+            ->addColumn('severity', 'string', ['comment' => 'Log level severity (debug, info, warning, error, critical)'])
+            ->addColumn('venue', 'string', ['comment' => 'Source component or class that generated this log message'])
+            ->addColumn('message', 'text', ['comment' => 'The actual log message content'])
+            ->addColumn('created', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'comment' => 'Timestamp when log entry was created'])
             ->addIndex(['apps_id', 'company_id'], ['unique' => true])
             ->addIndex('user_id')
             ->create();

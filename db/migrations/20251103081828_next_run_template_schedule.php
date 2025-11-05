@@ -15,7 +15,7 @@ declare(strict_types=1);
 
 use Phinx\Migration\AbstractMigration;
 
-final class RuntemplateActive extends AbstractMigration
+final class NextRunTemplateSchedule extends AbstractMigration
 {
     /**
      * Change Method.
@@ -31,7 +31,11 @@ final class RuntemplateActive extends AbstractMigration
     public function change(): void
     {
         $table = $this->table('runtemplate');
-        $table->addColumn('active', 'boolean', ['default' => true, 'comment' => 'Whether this run template is active and should be scheduled for execution'])
-            ->update();
+        $table->addColumn('next_schedule', 'timestamp', [
+            'null' => true,
+            'default' => null,
+            'comment' => 'Timestamp when this run template is next scheduled to execute (calculated by scheduler)',
+        ]);
+        $table->update();
     }
 }

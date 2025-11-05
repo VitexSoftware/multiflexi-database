@@ -32,7 +32,7 @@ final class AppDeploy extends AbstractMigration
     {
         $table = $this->table('apps');
         $table
-            ->addColumn('deploy', 'string', ['comment' => 'deploy command'])
+            ->addColumn('deploy', 'string', ['comment' => 'Command or script to deploy/install this application'])
             ->update();
 
         if ($this->adapter->getAdapterType() === 'mysql') {

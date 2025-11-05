@@ -19,18 +19,19 @@ class AbraFlexis extends AbstractMigration
 {
     public function change(): void
     {
-        $table = $this->table('abraflexis');
+        // AbraFlexi instances table - Stores connection information for AbraFlexi ERP systems
+        $table = $this->table('abraflexis', ['comment' => 'AbraFlexi ERP instances configuration and connection details']);
         $table->addColumn(
             'name',
             'string',
-            ['comment' => 'AbraFlexi instance Name'],
+            ['comment' => 'Human-readable name for the AbraFlexi instance'],
         )
-            ->addColumn('url', 'string', ['comment' => 'RestAPI endpoint url'])
-            ->addColumn('user', 'string', ['comment' => 'REST API Username'])
-            ->addColumn('password', 'string', ['comment' => 'Rest API Password'])
-            ->addColumn('DatCreate', 'datetime')
-            ->addColumn('DatSave', 'datetime', ['null' => true])
-            ->addIndex(['url'], ['unique' => true, 'name' => 'fbs_uniq'])
+            ->addColumn('url', 'string', ['comment' => 'Base URL for AbraFlexi REST API connection endpoint'])
+            ->addColumn('user', 'string', ['comment' => 'Username for API authentication to AbraFlexi'])
+            ->addColumn('password', 'string', ['comment' => 'Encrypted password for API authentication'])
+            ->addColumn('DatCreate', 'datetime', ['comment' => 'Record creation timestamp'])
+            ->addColumn('DatSave', 'datetime', ['null' => true, 'comment' => 'Last modification timestamp'])
+            ->addIndex(['url'], ['unique' => true, 'name' => 'fbs_uniq'])       // Ensure unique API endpoints
             ->create();
     }
 }
