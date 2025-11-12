@@ -2,6 +2,17 @@
 
 declare(strict_types=1);
 
+/**
+ * This file is part of the MultiFlexi package
+ *
+ * https://multiflexi.eu/
+ *
+ * (c) Vítězslav Dvořák <http://vitexsoftware.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 use Phinx\Migration\AbstractMigration;
 
 final class RunTemplateNote extends AbstractMigration
@@ -22,15 +33,16 @@ final class RunTemplateNote extends AbstractMigration
         $table = $this->table('runtemplate');
         $table->addColumn('note', 'text', [
             'null' => true,
-            'comment' => 'Additional notes or comments about this run template'
+            'comment' => 'Additional notes or comments about this run template',
         ]);
-        
+
         // Add fulltext index for databases that support it
         $adapterType = $this->getAdapter()->getAdapterType();
+
         if ($adapterType === 'mysql' || $adapterType === 'pgsql') {
             $table->addIndex('note', ['type' => 'fulltext']);
         }
-        
+
         $table->update();
     }
 }
