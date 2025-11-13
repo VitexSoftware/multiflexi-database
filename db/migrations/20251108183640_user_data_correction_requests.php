@@ -58,12 +58,6 @@ final class UserDataCorrectionRequests extends AbstractMigration
                 'null' => true,
                 'comment' => 'User justification for the correction request',
             ])
-            ->addColumn('status', 'enum', [
-                'values' => ['pending', 'approved', 'rejected', 'cancelled'],
-                'default' => 'pending',
-                'null' => false,
-                'comment' => 'Status of the correction request',
-            ])
             ->addColumn('requested_by_ip', 'string', [
                 'limit' => 45,
                 'null' => true,
@@ -110,6 +104,24 @@ final class UserDataCorrectionRequests extends AbstractMigration
                 'null' => false,
                 'comment' => 'Timestamp when the request was last updated',
             ]);
+
+        if ($databaseType === 'sqlite') {
+            $table
+                ->addColumn('status', 'string', [
+                    'limit' => 20,
+                    'default' => 'pending',
+                    'null' => false,
+                    'comment' => 'Status of the correction request: pending|approved|rejected',
+                ]);
+        } else {
+            $table
+                ->addColumn('status', 'enum', [
+                    'values' => ['pending', 'approved', 'rejected'],
+                    'default' => 'pending',
+                    'null' => false,
+                    'comment' => 'Status of the correction request',
+                ]);
+        }
 
         // Add indexes
         $table->addIndex(['user_id'], ['name' => 'idx_user_id'])
