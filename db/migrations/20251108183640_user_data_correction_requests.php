@@ -124,8 +124,7 @@ final class UserDataCorrectionRequests extends AbstractMigration
         }
 
         // Add indexes
-        $table->addIndex(['status'], ['name' => 'idx_status'])
-            ->addIndex(['created_at'], ['name' => 'idx_created_at']);
+        $table->addIndex(['status'], ['name' => 'idx_status']);
 
         // Add foreign key constraints
         $table->addForeignKey('user_id', 'user', 'id', [

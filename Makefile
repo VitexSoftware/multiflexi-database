@@ -62,7 +62,6 @@ dbreset: ## 🔄 Reset database
 	echo > db/multiflexi.sqlite
 	chmod 666 db/multiflexi.sqlite
 	chmod ugo+rwX db
-	
 
 demo: dbreset migration demodata ## 🎯 Setup demo environment
 
@@ -74,46 +73,6 @@ redeb: ## 🔨 Rebuild and reinstall package
 
 debs: ## 📦 Build debian packages
 	debuild -i -us -uc -b
-
-debs2deb: debs ## 📦 Bundle debian packages
-	mkdir -p ./dist/; rm -rf ./dist/* ; for deb in $$(cat debian/files | awk '{print $$1}'); do mv "../$$deb" ./dist/; done
-	debs2deb ./dist/ multi-flexi-dist
-	mv multi-flexi-dist_*_all.deb dist
-
-dimage: ## 🐳 Build docker image
-	docker build -t vitexsoftware/multiflexi .
-
-demoimage: ## 🐳 Build demo docker image
-	docker build -f Dockerfile.demo -t vitexsoftware/multiflexi-demo .
-
-demorun: ## 🎬 Run demo docker container
-	docker run  -dit --name MultiFlexiDemo -p 8282:80 vitexsoftware/multiflexi-demo
-	firefox http://localhost:8282?login=demo\&password=demo
-
-
-drun: dimage ## 🏃 Run docker container
-	docker run  -dit --name MultiServersetup -p 8080:80 vitexsoftware/multiflexi
-	firefox http://localhost:8080?login=demo\&password=demo
-
-vagrant: packages ## 📦 Setup vagrant environment
-	vagrant destroy -f
-	mkdir -p deb
-	debuild -us -uc
-	mv ../multiflexi-*_$(currentversion)_all.deb deb
-	mv ../multiflexi_$(currentversion)_all.deb deb
-	cd deb ; dpkg-scanpackages . /dev/null | gzip -9c > Packages.gz; cd ..
-	vagrant up
-	sensible-browser http://localhost:8080/multiflexi?login=demo\&password=demo
-
-release: ## 🚢 Create new release
-	echo Release v$(nextversion)
-	docker build -t vitexsoftware/multiflexi:$(nextversion) .
-	dch -v $(nextversion) `git log -1 --pretty=%B | head -n 1`
-	debuild -i -us -uc -b
-	git commit -a -m "Release v$(nextversion)"
-	git tag -a $(nextversion) -m "version $(nextversion)"
-	docker push vitexsoftware/multiflexi:$(nextversion)
-	docker push vitexsoftware/multiflexi:latest
 
 reset: ## ⚠️ Reset to origin
 	git fetch origin
