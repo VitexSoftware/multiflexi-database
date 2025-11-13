@@ -91,8 +91,7 @@ final class UserDataAudit extends AbstractMigration
 
         // Add indexes
         $table->addIndex(['user_id'], ['name' => 'idx_user_id'])
-            ->addIndex(['change_type'], ['name' => 'idx_change_type'])
-            ->addIndex(['created_at'], ['name' => 'idx_created_at']);
+            ->addIndex(['change_type'], ['name' => 'idx_change_type']);
 
         // Add foreign key constraints
         $table->addForeignKey('user_id', 'user', 'id', [
