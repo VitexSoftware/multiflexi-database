@@ -1,9 +1,16 @@
-multiflexi-database (2.3.2) UNRELEASED; urgency=medium
+multiflexi-database (2.4.0) UNRELEASED; urgency=medium
 
+  * Runtemplate Jobs count added
+
+ -- Vítězslav Vitex Dvořák <info@vitexsoftware.cz>  Thu, 13 Nov 2025 14:31:59 +0100
+
+multiflexi-database (2.3.2) noble; urgency=medium
+
+  [ vitex ]
   * update for vitexsoftware/fluentpdo
   * Increase user.password column from VARCHAR(40) to VARCHAR(255) for bcrypt/argon2 support
 
- -- vitex <info@vitexsoftware.cz>  Sun, 26 Jan 2025 02:21:00 +0100
+ -- Vítězslav Vitex Dvořák <info@vitexsoftware.cz>  Thu, 13 Nov 2025 14:31:36 +0100
 
 multiflexi-database (2.3.0) unstable; urgency=medium
 
