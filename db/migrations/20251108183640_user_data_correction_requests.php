@@ -25,19 +25,22 @@ final class UserDataCorrectionRequests extends AbstractMigration
      */
     public function change(): void
     {
-
         $databaseType = $this->getAdapter()->getOption('adapter');
         $unsigned = ($databaseType === 'mysql') ? ['signed' => false] : [];
 
-
         $table = $this->table('user_data_correction_requests');
 
-        $table->addColumn('user_id', 'integer',
-        array_merge(
-        [
-            'null' => false,
-            'comment' => 'ID of user requesting data correction',
-        ], $unsigned))
+        $table->addColumn(
+            'user_id',
+            'integer',
+            array_merge(
+                [
+                    'null' => false,
+                    'comment' => 'ID of user requesting data correction',
+                ],
+                $unsigned,
+            ),
+        )
             ->addColumn('field_name', 'string', [
                 'limit' => 100,
                 'null' => false,
@@ -66,21 +69,27 @@ final class UserDataCorrectionRequests extends AbstractMigration
                 'null' => true,
                 'comment' => 'IP address from where the request was made',
             ])
-            ->addColumn('requested_by_user_agent', 'text',
+            ->addColumn(
+                'requested_by_user_agent',
+                'text',
                 array_merge(
                     [
                         'null' => true,
                         'comment' => 'User agent string of the browser/client',
-                    ], $unsigned
-                )
+                    ],
+                    $unsigned,
+                ),
             )
-            ->addColumn('reviewed_by_user_id', 'integer',
+            ->addColumn(
+                'reviewed_by_user_id',
+                'integer',
                 array_merge(
                     [
                         'null' => true,
                         'comment' => 'ID of admin user who reviewed the request',
-                    ], $unsigned
-                )
+                    ],
+                    $unsigned,
+                ),
             )
             ->addColumn('reviewed_at', 'timestamp', [
                 'null' => true,
