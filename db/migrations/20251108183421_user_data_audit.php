@@ -30,50 +30,15 @@ final class UserDataAudit extends AbstractMigration
 
         $table = $this->table('user_data_audit');
 
-        $table->addColumn(
-            'user_id',
-            'integer',
-            array_merge(['null' => false, 'comment' => 'ID of user whose data was changed'], $unsigned),
-        )
-            ->addColumn('field_name', 'string', [
-                'limit' => 100,
-                'null' => false,
-                'comment' => 'Name of the field that was changed',
-            ])
-            ->addColumn('old_value', 'text', [
-                'null' => true,
-                'comment' => 'Previous value of the field',
-            ])
-            ->addColumn('new_value', 'text', [
-                'null' => true,
-                'comment' => 'New value of the field',
-            ])
-            ->addColumn(
-                'changed_by_user_id',
-                'integer',
-                array_merge([
-                    'null' => true,
-                    'comment' => 'ID of user who made the change (null for self-changes)',
-                ], $unsigned),
-            )
-            ->addColumn('ip_address', 'string', [
-                'limit' => 45,
-                'null' => true,
-                'comment' => 'IP address from where change was made',
-            ])
-            ->addColumn('user_agent', 'text', [
-                'null' => true,
-                'comment' => 'User agent string of the browser/client',
-            ])
-            ->addColumn('reason', 'text', [
-                'null' => true,
-                'comment' => 'Reason for the change (for admin changes)',
-            ])
-            ->addColumn('created_at', 'timestamp', [
-                'default' => 'CURRENT_TIMESTAMP',
-                'null' => false,
-                'comment' => 'Timestamp when the audit log entry was created',
-            ]);
+        $table->addColumn('user_id', 'integer', array_merge(['null' => false, 'comment' => 'ID of user whose data was changed'], $unsigned))
+            ->addColumn('field_name', 'string', ['limit' => 100, 'null' => false, 'comment' => 'Name of the field that was changed'])
+            ->addColumn('old_value', 'text', ['null' => true, 'comment' => 'Previous value of the field'])
+            ->addColumn('new_value', 'text', ['null' => true, 'comment' => 'New value of the field'])
+            ->addColumn('changed_by_user_id', 'integer', array_merge(['null' => true, 'comment' => 'ID of user who made the change (null for self-changes)'], $unsigned))
+            ->addColumn('ip_address', 'string', ['limit' => 45, 'null' => true, 'comment' => 'IP address from where change was made'])
+            ->addColumn('user_agent', 'text', ['null' => true, 'comment' => 'User agent string of the browser/client'])
+            ->addColumn('reason', 'text', ['null' => true, 'comment' => 'Reason for the change (for admin changes)'])
+            ->addColumn('created_at', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'null' => false, 'comment' => 'Timestamp when the audit log entry was created']);
 
         // Add enum columns - use enum for MySQL/PostgreSQL, string for SQLite
         if ($databaseType === 'sqlite') {
@@ -81,12 +46,7 @@ final class UserDataAudit extends AbstractMigration
                 ->addColumn('change_type', 'string', ['limit' => 20, 'default' => 'soft', 'null' => false, 'comment' => 'Type of data change operation: direct|pending_approval|approved|rejected']);
         } else {
             $table
-                ->addColumn('change_type', 'enum', [
-                    'values' => ['direct', 'pending_approval', 'approved', 'rejected'],
-                    'default' => 'direct',
-                    'null' => false,
-                    'comment' => 'Type of data change operation',
-                ]);
+                ->addColumn('change_type', 'enum', ['values' => ['direct', 'pending_approval', 'approved', 'rejected'], 'default' => 'direct', 'null' => false, 'comment' => 'Type of data change operation']);
         }
 
         // Add indexes
