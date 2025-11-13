@@ -72,7 +72,7 @@ final class AddAppArtifactsTable extends AbstractMigration
             ->addColumn('name', 'string', ['limit' => 255, 'null' => true, 'default' => null])
             ->addColumn('description', 'text', ['null' => true, 'default' => null])
             ->addColumn('hint', 'text', ['null' => true, 'default' => null])
-            ->addIndex(['app_artifact_id', 'lang'], ['unique' => true, 'name' => 'idx_conf_lang'])
+            ->addIndex(['app_artifact_id', 'lang'], ['unique' => true, 'name' => 'idxx_conf_lang'])
             ->addForeignKey('app_artifact_id', 'app_artifacts', 'id', ['delete' => 'CASCADE', 'update' => 'NO_ACTION'])
             ->create();
     }
