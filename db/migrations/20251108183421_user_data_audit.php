@@ -48,12 +48,6 @@ final class UserDataAudit extends AbstractMigration
                 'null' => true,
                 'comment' => 'New value of the field',
             ])
-            ->addColumn('change_type', 'enum', [
-                'values' => ['direct', 'pending_approval', 'approved', 'rejected'],
-                'default' => 'direct',
-                'null' => false,
-                'comment' => 'Type of data change operation',
-            ])
             ->addColumn(
                 'changed_by_user_id',
                 'integer',
@@ -80,6 +74,20 @@ final class UserDataAudit extends AbstractMigration
                 'null' => false,
                 'comment' => 'Timestamp when the audit log entry was created',
             ]);
+
+        // Add enum columns - use enum for MySQL/PostgreSQL, string for SQLite
+        if ($databaseType === 'sqlite') {
+            $table
+                ->addColumn('change_type', 'string', ['limit' => 20, 'default' => 'soft', 'null' => false, 'comment' => 'Type of data change operation: direct|pending_approval|approved|rejected']);
+        } else {
+            $table
+                ->addColumn('change_type', 'enum', [
+                    'values' => ['direct', 'pending_approval', 'approved', 'rejected'],
+                    'default' => 'direct',
+                    'null' => false,
+                    'comment' => 'Type of data change operation',
+                ]);
+        }
 
         // Add indexes
         $table->addIndex(['user_id'], ['name' => 'idx_user_id'])
