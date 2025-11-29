@@ -33,8 +33,11 @@ final class EnsureJobRuntemplate extends AbstractMigration
         $configs = $this->table('job');
 
         if ($configs->hasColumn('runtemplate_id') === false) {
+            $databaseType = $this->getAdapter()->getOption('adapter');
+            $unsigned = ($databaseType === 'mysql') ? ['signed' => false] : [];
+
             $configs
-                ->addColumn('runtemplate_id', 'integer', ['null' => true])
+                ->addColumn('runtemplate_id', 'integer', array_merge(['null' => true], $unsigned))
                 ->addIndex(['runtemplate_id'])
                 ->save();
         }

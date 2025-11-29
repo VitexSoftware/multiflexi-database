@@ -31,10 +31,12 @@ final class ConfigurationRuntemplate extends AbstractMigration
     public function change(): void
     {
         $configs = $this->table('configuration');
+        $databaseType = $this->getAdapter()->getOption('adapter');
+        $unsigned = ($databaseType === 'mysql') ? ['signed' => false] : [];
 
         if ($configs->hasColumn('runtemplate_id') === false) {
             $configs
-                ->addColumn('runtemplate_id', 'integer', ['null' => true])
+                ->addColumn('runtemplate_id', 'integer', array_merge(['null' => true], $unsigned))
                 ->addIndex(['runtemplate_id'])
                 ->save();
         }

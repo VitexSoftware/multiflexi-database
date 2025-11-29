@@ -57,11 +57,15 @@ newmigration-%: ## ➕ Prepare new Database Migration with given name
 newseed: ## 🌿 Create new seed
 	read -p "Enter CamelCase seed name : " migname ; cd db ; ../vendor/bin/phinx seed:create $$migname -c ./phinx-adapter.php ; cd ..
 
-dbreset: ## 🔄 Reset database
+reset-sqlite: ## 🔄 Reset SQLite database
 	sudo rm -f db/multiflexi.sqlite
 	echo > db/multiflexi.sqlite
 	chmod 666 db/multiflexi.sqlite
 	chmod ugo+rwX db
+
+reset-mysql: ## Force reset MySQL database
+	echo 'drop database multiflexi; create database multiflexi;' | sudo mysql
+	make migration
 
 demo: dbreset migration demodata ## 🎯 Setup demo environment
 

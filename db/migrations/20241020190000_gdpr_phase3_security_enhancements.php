@@ -95,7 +95,7 @@ class GdprPhase3SecurityEnhancements extends AbstractMigration
             ->addIndex(['username', 'attempt_time'])
             ->addIndex(['success'])
             ->addIndex(['attempt_time'])
-            ->update();
+            ->create();
     }
 
     /**
