@@ -62,6 +62,7 @@ reset-sqlite: ## 🔄 Reset SQLite database
 	echo > db/multiflexi.sqlite
 	chmod 666 db/multiflexi.sqlite
 	chmod ugo+rwX db
+	make migration
 
 reset-mysql: ## Force reset MySQL database
 	echo 'drop database multiflexi; create database multiflexi;' | sudo mysql

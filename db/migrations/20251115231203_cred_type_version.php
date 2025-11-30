@@ -32,13 +32,10 @@ final class CredTypeVersion extends AbstractMigration
     {
         $table = $this->table('credential_type');
 
-        $table->addColumn('version', 'integer', ['null' => false, 'signed' => false])
+        $table->addColumn('version', 'string', ['null' => false, 'length' => 20])
             ->addIndex(
-                ['version'],
-                [
-                    'name' => 'idx_credential_type_version',
-                    'unique' => false,
-                ],
+                ['uuid','version'],
+                ['name' => 'idx_credential_type_version','unique' => false,],
             )
             ->update();
     }
