@@ -35,17 +35,6 @@ final class RenameReservedWordColumns extends AbstractMigration
             }
         }
 
-        // Rename 'type' column in credential_type table to 'cred_type' if it exists
-        // 'type' is a reserved word in PostgreSQL
-        if ($this->hasTable('credential_type')) {
-            $table = $this->table('credential_type');
-
-            if ($table->hasColumn('type')) {
-                $table->renameColumn('type', 'cred_type')
-                    ->update();
-            }
-        }
-
         // Update any other tables that might have reserved word columns
         // Common reserved words across databases: key, type, user, group, order, desc, asc, table, column, index
 

@@ -31,6 +31,19 @@ dbc_mysql_createdb_encoding="UTF8"
                 export dbc_dbname="$RET"
             fi
 
+            # Ensure target database exists before dbconfig-common privilege checks
+            # dbconfig-common expects the database to be present when verifying grants
+            if command -v mysql >/dev/null 2>&1; then
+                if [ -r /etc/mysql/debian.cnf ]; then
+                    MYSQL_ADMIN_OPTS="--defaults-file=/etc/mysql/debian.cnf"
+                else
+                    MYSQL_ADMIN_OPTS="-uroot"
+                fi
+                # Create DB if missing (no-op if it already exists)
+                mysql ${MYSQL_ADMIN_OPTS} \
+                    -e "CREATE DATABASE IF NOT EXISTS \`$dbc_dbname\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;" || true
+            fi
+
             dbc_go multiflexi "$@"
 
 

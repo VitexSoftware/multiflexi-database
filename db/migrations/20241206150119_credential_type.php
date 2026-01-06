@@ -34,7 +34,7 @@ final class CredentialType extends AbstractMigration
         $table->addColumn('name', 'string', ['limit' => 255])
             ->addColumn('url', 'string', ['limit' => 255])
             ->addColumn('logo', 'string', ['limit' => 255])
-            ->addColumn('fields', 'text')
-            ->create();
+            ->addColumn('uuid', 'string', ['length' => 40])
+            ->update();
     }
 }
