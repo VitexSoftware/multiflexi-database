@@ -32,7 +32,7 @@ final class CredTypeClass extends AbstractMigration
     {
         // Modify the 'credential_type' table
         $table = $this->table('credential_type');
-        $table->removeColumn('fields')
+        $table
             ->addColumn('class', 'string', ['null' => true, 'comment' => 'Name of PHP class used to provide extended functionality'])
             ->addIndex(['uuid'], ['unique' => true])
             ->update();

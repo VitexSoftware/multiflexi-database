@@ -31,20 +31,20 @@ final class CredentialTypeUuid extends AbstractMigration
     public function change(): void
     {
         $table = $this->table('credential_type');
-        
+
         // Check if uuid column already exists
         if (!$table->hasColumn('uuid')) {
             $adapterType = $this->adapter->getAdapterType();
-            
+
             if ($adapterType === 'mysql') {
                 // MySQL 8+ supports uuid() function as default
                 $table->addColumn('uuid', 'string', [
                     'length' => 40,
                     'null' => true,
-                    'comment' => 'Unique identifier for credential type - auto-generated UUID'
+                    'comment' => 'Unique identifier for credential type - auto-generated UUID',
                 ]);
                 $table->update();
-                
+
                 // Set default to auto-generate UUID
                 $this->execute('ALTER TABLE `credential_type` CHANGE `uuid` `uuid` VARCHAR(40) NULL DEFAULT (uuid())');
             } elseif ($adapterType === 'pgsql') {
@@ -54,7 +54,7 @@ final class CredentialTypeUuid extends AbstractMigration
                     'length' => 40,
                     'null' => true,
                     'default' => 'uuid_generate_v4()',
-                    'comment' => 'Unique identifier for credential type - auto-generated UUID'
+                    'comment' => 'Unique identifier for credential type - auto-generated UUID',
                 ]);
                 $table->update();
             } else {
@@ -62,7 +62,7 @@ final class CredentialTypeUuid extends AbstractMigration
                 $table->addColumn('uuid', 'string', [
                     'length' => 40,
                     'null' => true,
-                    'comment' => 'Unique identifier for credential type'
+                    'comment' => 'Unique identifier for credential type',
                 ]);
                 $table->update();
             }
