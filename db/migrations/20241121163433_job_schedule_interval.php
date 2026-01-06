@@ -31,15 +31,7 @@ final class JobScheduleInterval extends AbstractMigration
     public function change(): void
     {
         // Set all schedule values to NULL (already present)
-        if (method_exists($this, 'updateQuery')) {
-            $builder = $this->updateQuery();
-            $builder
-                ->update('job')
-                ->set('schedule', null)
-                ->execute();
-        } else {
-            $this->execute('UPDATE job SET schedule=NULL');
-        }
+        $this->execute('UPDATE job SET schedule=NULL');
 
         $table = $this->table('job');
         $table
