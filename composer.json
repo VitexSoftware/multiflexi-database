@@ -21,7 +21,7 @@
     "minimum-stability": "dev",
     "require-dev": {
         "phpstan/phpstan": "*",
-        "friendsofphp/php-cs-fixer": "^3.87",
+        "friendsofphp/php-cs-fixer": "^3.92",
         "ergebnis/composer-normalize": "^2.47",
         "ergebnis/php-cs-fixer-config": "^6.54",
         "phpstan/phpstan-phpunit": "2.0.x-dev",
