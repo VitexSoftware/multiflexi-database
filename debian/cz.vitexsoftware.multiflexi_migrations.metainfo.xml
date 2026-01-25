@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>cz.vitexsoftware.multiflexi_migrations</id>
+  <metadata_license>MIT</metadata_license>
+  <project_license>MIT</project_license>
+  <name>multiflexi-migrations</name>
+  <summary>Database migrations for MultiFlexi</summary>
+  <description>
+    <p>
+      Php classes used by the phinx migration system to mange MultiFlexi database structure Mandatory dependencies for use Multi FlexiBee setup with SQLite database Mandatory dependencies for use Multi FlexiBee setup with MySQL/MariaDB database Mandatory dependencies for use Multi FlexiBee setup with PostgreSQL database
+    </p>
+  </description>
+  <categories>
+    <category>Utility</category>
+  </categories>
+  <url type="homepage">https://github.com/VitexSoftware/multiflexi-database</url>
+  <url type="bugtracker">https://github.com/VitexSoftware/multiflexi-database/issues</url>
+  <developer id="cz.vitexsoftware">
+    <name>VitexSoftware</name>
+  </developer>
+  <content_rating type="oars-1.1"/>
+</component>
