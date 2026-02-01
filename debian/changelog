@@ -1,8 +1,12 @@
-multiflexi-database (2.4.0) UNRELEASED; urgency=medium
+multiflexi-database (2.4.1) UNRELEASED; urgency=medium
 
+  [ Vítězslav Vitex Dvořák ]
   * Runtemplate Jobs count added
 
- -- Vítězslav Vitex Dvořák <info@vitexsoftware.cz>  Thu, 13 Nov 2025 14:31:59 +0100
+  [ vitex ]
+  * Fix MySQL database creation before dbconfig-common privilege checks
+
+ -- vitex <info@vitexsoftware.cz>  Sun, 01 Feb 2026 19:28:48 +0100
 
 multiflexi-database (2.3.2) noble; urgency=medium
 
