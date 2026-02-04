@@ -21,26 +21,35 @@ Package: multiflexi-sqlite
 Provides: multiflexi-database
 Pre-Depends: multiflexi-migrations
 Depends: ${misc:Depends}, dbconfig-sqlite3, php-sqlite3, sqlite3
-Conflicts: multiflexi-mysql, multiflexi-pgsql
+Breaks: multiflexi-mysql (<< ${source:Version}), multiflexi-pgsql (<< ${source:Version})
 Architecture: all
 Description: sqlite support for multiabraflexi setup
  Mandatory dependencies for use Multi FlexiBee setup with SQLite database
+ .
+ This backend is recommended for development and CI environments due to its
+ simplicity and zero-configuration setup.
 
 Package: multiflexi-mysql
 Provides: multiflexi-database
 Pre-Depends: multiflexi-migrations
 Depends: ${misc:Depends}, dbconfig-mysql, php-mysql, php-robmorgan-phinx|php-cakephp-phinx
-Conflicts: multiflexi-sqlite, multiflexi-pgsql
+Breaks: multiflexi-sqlite (<< ${source:Version}), multiflexi-pgsql (<< ${source:Version})
 Suggests: mariadb-server
 Architecture: all
 Description: mariadb support for multiabraflexi setup
  Mandatory dependencies for use Multi FlexiBee setup with MySQL/MariaDB database
+ .
+ This backend is recommended for production environments requiring high
+ performance and reliability.
 
 Package: multiflexi-pgsql
 Provides: multiflexi-database
 Pre-Depends: multiflexi-migrations
 Depends: ${misc:Depends}, dbconfig-pgsql, php-pgsql, php-robmorgan-phinx|php-cakephp-phinx
-Conflicts: multiflexi-sqlite, multiflexi-mysql
+Breaks: multiflexi-sqlite (<< ${source:Version}), multiflexi-mysql (<< ${source:Version})
 Architecture: all
 Description: postgresql support for multiabraflexi setup
  Mandatory dependencies for use Multi FlexiBee setup with PostgreSQL database
+ .
+ This backend is recommended for production environments requiring advanced
+ features and enterprise-grade reliability.
