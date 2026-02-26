@@ -1,3 +1,9 @@
+multiflexi-database (2.5.0) UNRELEASED; urgency=medium
+
+  * event_source and event_rule tables for event-driven job triggering
+
+ -- vitex <info@vitexsoftware.cz>  Thu, 26 Feb 2026 22:00:00 +0100
+
 multiflexi-database (2.4.1) UNRELEASED; urgency=medium
 
   [ Vítězslav Vitex Dvořák ]
