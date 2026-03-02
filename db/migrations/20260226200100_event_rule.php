@@ -22,13 +22,16 @@ final class EventRule extends AbstractMigration
      */
     public function up(): void
     {
+        $databaseType = $this->getAdapter()->getOption('adapter');
+        $unsigned = ($databaseType === 'mysql') ? ['signed' => false] : [];
+
         $table = $this->table('event_rule');
 
         $table
-            ->addColumn('event_source_id', 'integer', [
+            ->addColumn('event_source_id', 'integer', array_merge([
                 'null' => false,
                 'comment' => 'Foreign key to event_source.id',
-            ])
+            ], $unsigned))
             ->addColumn('evidence', 'string', [
                 'limit' => 60,
                 'null' => true,
@@ -41,10 +44,10 @@ final class EventRule extends AbstractMigration
                 'null' => false,
                 'comment' => 'Operation filter: create, update, delete, any',
             ])
-            ->addColumn('runtemplate_id', 'integer', [
+            ->addColumn('runtemplate_id', 'integer', array_merge([
                 'null' => false,
                 'comment' => 'Foreign key to runtemplate.id — the job to trigger',
-            ])
+            ], $unsigned))
             ->addColumn('env_mapping', 'text', [
                 'null' => true,
                 'default' => null,
