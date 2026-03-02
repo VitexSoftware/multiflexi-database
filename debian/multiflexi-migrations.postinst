@@ -7,7 +7,6 @@ set -e
 # Spustí migraci databáze po instalaci
 
 
-composer-debian multiflexi-database
 
 
 case "$1" in
