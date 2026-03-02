@@ -12,6 +12,7 @@ properties([
 node() {
     ansiColor('xterm') {
         stage('SCM Checkout') {
+            sh 'sudo chown -R jenkins:jenkins . || true'
             checkout scm
         }
     }
@@ -32,8 +33,9 @@ distributions.each { distro ->
         node {
             ansiColor('xterm') {
                 stage('Checkout ' + distroName) {
+                    sh 'sudo chown -R jenkins:jenkins . || true'
                     checkout scm
-                    def imageName = vendor + '/' + imagePrefix + distroCode + ':latest'
+                    def imageName = vendor + '/' + imagePrefix + dist[0] + ':' + distroCode
                     buildImage = docker.image(imageName)
                     sh 'git checkout debian/changelog'
                     def version = sh (
@@ -62,15 +64,11 @@ distributions.each { distro ->
                         sh 'cd $WORKSPACE/dist/debian/ ; dpkg-scanpackages . /dev/null | gzip -9c > Packages.gz; cd $WORKSPACE'
                         sh 'echo "deb [trusted=yes] file://///$WORKSPACE/dist/debian/ ./" | sudo tee /etc/apt/sources.list.d/local.list'
                         sh 'sudo apt-get update --allow-releaseinfo-change'
-                        sh 'echo "INSTALLATION (sqlite only)"'
+                        sh 'echo "INSTALATION"'
                         artifacts.each { deb_file ->
-                            if (deb_file.startsWith('multiflexi-sqlite') && deb_file.endsWith('.deb')) {
+                            if (deb_file.endsWith('.deb')) {
                                 sh 'echo -e "${GREEN} installing ' + deb_file + ' on `lsb_release -sc` ${ENDCOLOR} "'
                                 sh 'sudo DEBIAN_FRONTEND=noninteractive DEBCONF_DEBUG=' + debconf_debug + ' apt-get -y install $WORKSPACE/dist/debian/' + deb_file
-                                // Fix permissions for SQLite database before running tests
-                                sh 'sudo chown -R $(id -u):$(id -g) /var/lib/dbconfig-common/sqlite3/multiflexi || true'
-                                sh 'sudo chmod 750 /var/lib/dbconfig-common/sqlite3/multiflexi || true'
-                                sh 'sudo chmod 640 /var/lib/dbconfig-common/sqlite3/multiflexi/multiflexi || true'
                             }
                         }
                     }
