@@ -20,7 +20,7 @@ final class EventRule extends AbstractMigration
     /**
      * Create the event_rule table for mapping events to RunTemplates.
      */
-    public function up(): void
+    public function change(): void
     {
         $databaseType = $this->getAdapter()->getOption('adapter');
         $unsigned = ($databaseType === 'mysql') ? ['signed' => false] : [];
@@ -77,21 +77,11 @@ final class EventRule extends AbstractMigration
                 'delete' => 'CASCADE',
                 'update' => 'CASCADE',
             ])
-            ->addForeignKey('runtemplate_id', 'runtemplate', ['id'], [
-                'constraint' => 'fk_event_rule_runtemplate',
-                'delete' => 'CASCADE',
-                'update' => 'CASCADE',
-            ])
+            // fk_event_rule_runtemplate is added by 20260316094251_runtemplate_unsigned
+            // after runtemplate.id is converted to UNSIGNED
             ->addIndex(['event_source_id', 'enabled'], ['name' => 'idx_event_rule_source_enabled'])
             ->addIndex(['evidence', 'operation'], ['name' => 'idx_event_rule_evidence_op'])
             ->create();
     }
 
-    /**
-     * Drop the event_rule table.
-     */
-    public function down(): void
-    {
-        $this->table('event_rule')->drop()->save();
-    }
 }
