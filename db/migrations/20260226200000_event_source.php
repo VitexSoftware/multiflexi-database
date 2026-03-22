@@ -20,7 +20,7 @@ final class EventSource extends AbstractMigration
     /**
      * Create the event_source table for storing webhook adapter database connections.
      */
-    public function up(): void
+    public function change(): void
     {
         $table = $this->table('event_source');
 
@@ -95,11 +95,4 @@ final class EventSource extends AbstractMigration
             ->create();
     }
 
-    /**
-     * Drop the event_source table.
-     */
-    public function down(): void
-    {
-        $this->table('event_source')->drop()->save();
-    }
 }
