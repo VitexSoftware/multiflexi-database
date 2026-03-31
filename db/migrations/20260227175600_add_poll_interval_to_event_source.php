@@ -23,7 +23,7 @@ final class AddPollIntervalToEventSource extends AbstractMigration
     public function up(): void
     {
         $table = $this->table('event_source');
-        
+
         $table
             ->addColumn('poll_interval', 'integer', [
                 'default' => 60,

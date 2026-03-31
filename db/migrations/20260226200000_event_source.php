@@ -94,5 +94,4 @@ final class EventSource extends AbstractMigration
             ->addIndex(['enabled'], ['name' => 'idx_event_source_enabled'])
             ->create();
     }
-
 }

@@ -83,5 +83,4 @@ final class EventRule extends AbstractMigration
             ->addIndex(['evidence', 'operation'], ['name' => 'idx_event_rule_evidence_op'])
             ->create();
     }
-
 }
