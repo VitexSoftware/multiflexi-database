@@ -3173,8 +3173,8 @@
             "version": "2.2.x-dev",
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/8acfa3876b05be91d398d5f171cee45be0398401",
-                "reference": "8acfa3876b05be91d398d5f171cee45be0398401",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/6777f6de4a3461761429a3db5954cffcc8a9079e",
+                "reference": "6777f6de4a3461761429a3db5954cffcc8a9079e",
                 "shasum": ""
             },
             "require": {
@@ -3220,7 +3220,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-03-30T14:56:13+00:00"
+            "time": "2026-03-31T15:27:10+00:00"
         },
         {
             "name": "phpstan/phpstan-phpunit",
@@ -3865,12 +3865,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/rectorphp/rector.git",
-                "reference": "645a17991bde3aac7b861514904fc86cc1e1235a"
+                "reference": "bcf39aa94d1fbee13cd1e98392b303f0840ff84e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rectorphp/rector/zipball/645a17991bde3aac7b861514904fc86cc1e1235a",
-                "reference": "645a17991bde3aac7b861514904fc86cc1e1235a",
+                "url": "https://api.github.com/repos/rectorphp/rector/zipball/bcf39aa94d1fbee13cd1e98392b303f0840ff84e",
+                "reference": "bcf39aa94d1fbee13cd1e98392b303f0840ff84e",
                 "shasum": ""
             },
             "require": {
@@ -3918,7 +3918,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-03-30T15:55:54+00:00"
+            "time": "2026-03-31T05:28:26+00:00"
         },
         {
             "name": "sebastian/diff",
