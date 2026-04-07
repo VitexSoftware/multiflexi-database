@@ -35,7 +35,7 @@ final class AppDefFilePath extends AbstractMigration
             ->addColumn('deffile', 'string', ['comment' => 'Definition file path', 'null' => true, 'limit' => 255])
             ->addColumn('helmchart', 'string', ['comment' => 'URI or local path to helm', 'null' => true, 'limit' => 255])
             ->addIndex(['deffile'], ['unique' => true])
-            ->addIndex(['uuid'], ['unique' => true])
+            ->addIndex(['helmchart'], ['unique' => true])
             ->save();
     }
 }
