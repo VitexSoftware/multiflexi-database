@@ -9,7 +9,7 @@
     ],
     "require": {
         "vitexsoftware/ease-fluentpdo": "dev-main",
-        "robmorgan/phinx": "^0.14"
+        "robmorgan/phinx": "^0.16"
     },
     "license": "MIT",
     "authors": [
@@ -27,7 +27,9 @@
         "phpstan/phpstan-phpunit": "2.0.x-dev",
         "rector/rector": "dev-main"
     },
-    "bin": ["bin/migrator"],
+    "bin": [
+        "bin/migrator"
+    ],
     "config": {
         "allow-plugins": {
             "ergebnis/composer-normalize": true
