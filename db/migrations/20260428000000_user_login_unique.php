@@ -26,6 +26,22 @@ final class UserLoginUnique extends AbstractMigration
             $table->removeIndex(['login', 'email'])->save();
         }
 
+        // Deduplicate: keep the row with the lowest id for each login, delete the rest.
+        // MySQL cannot reference the target table directly in DELETE...NOT IN, requiring a
+        // derived table wrapper. PostgreSQL and SQLite do not have this restriction and do
+        // not accept backtick quoting, so we branch on adapter type.
+        $adapter = $this->getAdapter()->getAdapterType();
+
+        if ($adapter === 'mysql') {
+            $this->execute(
+                'DELETE FROM `user` WHERE id NOT IN (SELECT min_id FROM (SELECT MIN(id) AS min_id FROM `user` GROUP BY login) AS t)'
+            );
+        } else {
+            $this->execute(
+                'DELETE FROM "user" WHERE id NOT IN (SELECT MIN(id) FROM "user" GROUP BY login)'
+            );
+        }
+
         // Add a unique index on login alone
         if (!$table->hasIndex(['login'])) {
             $table->addIndex(['login'], ['unique' => true, 'name' => 'user_login_unique'])->save();
