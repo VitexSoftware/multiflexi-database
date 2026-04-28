@@ -13,7 +13,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-include_once '/usr/share/php/EaseFluentPDO/autoload.php';
+require_once '/usr/share/php/EaseFluentPDO/autoload.php';
 
 \Ease\Shared::init(['DB_CONNECTION'], '/etc/multiflexi/database.env', false);
 
