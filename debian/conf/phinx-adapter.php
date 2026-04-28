@@ -13,51 +13,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-include_once '/usr/share/php/Ease/Atom.php';
-
-include_once '/usr/share/php/Ease/Shared.php';
-
-include_once '/usr/share/php/Ease/Molecule.php';
-
-include_once '/usr/share/php/Ease/Logger/Logging.php';
-
-include_once '/usr/share/php/Ease/Sand.php';
-
-include_once '/usr/share/php/Ease/Functions.php';
-
-include_once '/usr/share/php/Ease/Logger/Message.php';
-
-include_once '/usr/share/php/Ease/Logger/Loggingable.php';
-
-include_once '/usr/share/php/Ease/Logger/Loggingable.php';
-
-include_once '/usr/share/php/Ease/Logger/ToMemory.php';
-
-include_once '/usr/share/php/Ease/recordkey.php';
-
-include_once '/usr/share/php/Ease/Brick.php';
-
-include_once '/usr/share/php/Ease/Person.php';
-
-include_once '/usr/share/php/Ease/Anonym.php';
-
-include_once '/usr/share/php/Ease/User.php';
-
-include_once '/usr/share/php/Ease/Logger/ToStd.php';
-
-include_once '/usr/share/php/Ease/Logger/ToSyslog.php';
-
-include_once '/usr/share/php/Ease/Logger/ToConsole.php';
-
-include_once '/usr/share/php/Ease/Logger/Regent.php';
-
-include_once '/usr/share/php/Ease/Logger/ToMemory.php';
-
-include_once '/usr/share/php/Ease/Exception.php';
-
-include_once '/usr/share/php/EaseFluentPDO/Orm.php';
-
-include_once '/usr/share/php/EaseFluentPDO/Engine.php';
+include_once '/usr/share/php/EaseFluentPDO/autoload.php';
 
 \Ease\Shared::init(['DB_CONNECTION'], '/etc/multiflexi/database.env', false);
 
