@@ -4,20 +4,25 @@
 DB_ENV="/etc/multiflexi/database.env"
 MF_ENV="/etc/multiflexi/multiflexi.env"
 
-if [ -f "$DB_ENV" ] && [ -f "$MF_ENV" ]; then
-    # Read all keys from database.env
-    while IFS='=' read -r key value; do
-        # Skip empty lines and comments
-        [[ -z "$key" || "$key" =~ ^# ]] && continue
-        # Remove possible export
-        key="${key#export }"
-        # Remove whitespace
-        key="$(echo "$key" | xargs)"
-        # Update or add the key in multiflexi.env
-        if grep -qE "^$key=" "$MF_ENV"; then
-            sed -i "s|^$key=.*|$key=$value|" "$MF_ENV"
-        else
-            echo "$key=$value" >> "$MF_ENV"
-        fi
-    done < "$DB_ENV"
+if [ -f "$DB_ENV" ]; then
+    if [ ! -f "$MF_ENV" ]; then
+        mkdir -p "$(dirname "$MF_ENV")"
+        cp "$DB_ENV" "$MF_ENV"
+    else
+        # Read all keys from database.env
+        while IFS='=' read -r key value; do
+            # Skip empty lines and comments
+            [[ -z "$key" || "$key" =~ ^# ]] && continue
+            # Remove possible export
+            key="${key#export }"
+            # Remove whitespace
+            key="$(echo "$key" | xargs)"
+            # Update or add the key in multiflexi.env
+            if grep -qE "^$key=" "$MF_ENV"; then
+                sed -i "s|^$key=.*|$key=$value|" "$MF_ENV"
+            else
+                echo "$key=$value" >> "$MF_ENV"
+            fi
+        done < "$DB_ENV"
+    fi
 fi

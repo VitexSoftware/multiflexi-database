@@ -30,6 +30,7 @@ set -e
 
             dbc_go multiflexi "$@"
 
+            update-multiflexi-env
 
             if [ -z "$MULTIFLEXI_NOMIGRATE" ]; then
                 multiflexi-migrator
