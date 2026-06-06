@@ -1,3 +1,11 @@
+multiflexi-database (2.5.4) UNRELEASED; urgency=medium
+
+  * Keep company_user fix in original migration only:
+    remove follow-up corrective migration and rely on unsigned company_id/user_id
+    in 20260606090000_company_user.php
+
+ -- vitex <info@vitexsoftware.cz>  Sat, 06 Jun 2026 13:35:00 +0200
+
 multiflexi-database (2.5.3) UNRELEASED; urgency=medium
 
   * Add non-destructive MySQL follow-up migration for company_user:
