@@ -1,3 +1,11 @@
+multiflexi-database (2.5.3) UNRELEASED; urgency=medium
+
+  * Add non-destructive MySQL follow-up migration for company_user:
+    - enforce UNSIGNED on company_id/user_id
+    - add missing FK constraints when absent
+
+ -- vitex <info@vitexsoftware.cz>  Sat, 06 Jun 2026 13:15:00 +0200
+
 multiflexi-database (2.5.2) UNRELEASED; urgency=medium
 
   * Fix MySQL FK compatibility in company_user migration:
