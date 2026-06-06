@@ -1,3 +1,9 @@
+multiflexi-database (2.5.1) UNRELEASED; urgency=medium
+
+  * Add company_user table migration for company-level user assignments
+
+ -- vitex <info@vitexsoftware.cz>  Sat, 06 Jun 2026 12:35:00 +0200
+
 multiflexi-database (2.5.0) UNRELEASED; urgency=medium
 
   * event_source and event_rule tables for event-driven job triggering
