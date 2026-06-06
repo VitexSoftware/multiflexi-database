@@ -28,7 +28,7 @@ final class CompanyUser extends AbstractMigration
         }
 
         $table = $this->table('company_user', ['comment' => 'Many-to-many relationship between companies and users with access role']);
-        $table->addColumn('company_id', 'integer', ['null' => false])
+        $table->addColumn('company_id', 'integer', array_merge(['null' => false], $unsigned))
             ->addColumn('user_id', 'integer', array_merge(['null' => false], $unsigned))
             ->addColumn('role', 'string', ['null' => false, 'default' => 'viewer'])
             ->addColumn('created_at', 'timestamp', ['default' => 'CURRENT_TIMESTAMP'])
