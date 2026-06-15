@@ -1,3 +1,16 @@
+multiflexi-database (2.5.5) UNRELEASED; urgency=medium
+
+  * Add task table (scheduling window with state machine)
+  * Add task_id column to job table
+  * Add retry/SLA config columns to runtemplate table
+    (deadline_offset, max_attempts, retry_backoff, retry_min_gap, allow_late)
+  * Add EncryptionKeysSeeder: initialises encryption_keys table on first install,
+    replaces PLACEHOLDER_KEY_TO_BE_REPLACED with a real AES-256 key encrypted
+    by ENCRYPTION_MASTER_KEY; idempotent – never overwrites a real key
+  * Call EncryptionKeysSeeder from postinst after multiflexi-migrator
+
+ -- vitex <info@vitexsoftware.cz>  Sun, 15 Jun 2026 22:00:00 +0200
+
 multiflexi-database (2.5.4) UNRELEASED; urgency=medium
 
   * Keep company_user fix in original migration only:

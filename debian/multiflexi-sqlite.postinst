@@ -34,6 +34,7 @@ set -e
 
             if [ -z "$MULTIFLEXI_NOMIGRATE" ]; then
                 multiflexi-migrator
+                phinx seed:run -c /usr/lib/multiflexi-database/phinx-adapter.php -s EncryptionKeysSeeder || true
             else
                 echo "Skipping migration due to MULTIFLEXI_NOMIGRATE being set."
             fi
