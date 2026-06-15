@@ -46,6 +46,47 @@ Supported database engines:
 
 All MultiFlexi components are designed to work seamlessly with any of these database backends through database abstraction layers.
 
+## Encryption keys
+
+MultiFlexi stores credential values encrypted with AES-256-GCM/CBC.
+Three keys are maintained in the `encryption_keys` table: `default`, `credentials`, and `personal_data`.
+
+The `EncryptionKeysSeeder` initialises these keys during first install.
+Each key is a freshly generated 256-bit random value that is itself encrypted
+with `ENCRYPTION_MASTER_KEY` before being stored in the database.
+
+### Requirement
+
+`ENCRYPTION_MASTER_KEY` (or `MULTIFLEXI_MASTER_KEY`) must be set in the
+environment **or** in `/etc/multiflexi/database.env` before the seeder is run.
+If the variable is absent the seeder prints an error and exits without
+modifying the database.
+
+### Automatic execution
+
+The Debian postinst scripts for `multiflexi-mysql`, `multiflexi-pgsql` and
+`multiflexi-sqlite` call the seeder automatically after `multiflexi-migrator`:
+
+```sh
+phinx seed:run -c /usr/lib/multiflexi-database/phinx-adapter.php -s EncryptionKeysSeeder
+```
+
+### Manual execution
+
+```sh
+export ENCRYPTION_MASTER_KEY="your-very-secret-master-key"
+phinx seed:run -c /usr/lib/multiflexi-database/phinx-adapter.php -s EncryptionKeysSeeder
+```
+
+### Idempotency
+
+The seeder is safe to run repeatedly.
+Rows whose `key_data` already contains a real (non-placeholder) value are
+never touched.
+Only rows that are missing entirely, or that still contain the
+`PLACEHOLDER_KEY_TO_BE_REPLACED` sentinel inserted by the migration, are
+written.
+
 ## MultiFlexi
 
 multiflexi-database is part of [MultiFlexi](https://multiflexi.eu) suite.

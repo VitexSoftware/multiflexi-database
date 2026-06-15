@@ -12,7 +12,7 @@ Rules-Requires-Root: no
 Package: multiflexi-migrations
 Architecture: all
 Depends: ${misc:Depends}, multiflexi-common, php-vitexsoftware-ease-fluentpdo, adduser
-Pre-Depends: php-robmorgan-phinx|php-cakephp-phinx
+Pre-Depends: php-cakephp-phinx
 Description: Database migrations for MultiFlexi
  Php classes used by the phinx migration system to mange MultiFlexi
  database structure
@@ -32,7 +32,7 @@ Description: sqlite support for multiabraflexi setup
 Package: multiflexi-mysql
 Provides: multiflexi-database
 Pre-Depends: multiflexi-migrations
-Depends: ${misc:Depends}, dbconfig-mysql, php-mysql, php-robmorgan-phinx|php-cakephp-phinx, php-vitexsoftware-ease-fluentpdo
+Depends: ${misc:Depends}, dbconfig-mysql, php-mysql, php-cakephp-phinx, php-vitexsoftware-ease-fluentpdo
 Breaks: multiflexi-sqlite (<< ${source:Version}), multiflexi-pgsql (<< ${source:Version})
 Suggests: mariadb-server
 Architecture: all
@@ -45,7 +45,7 @@ Description: mariadb support for multiabraflexi setup
 Package: multiflexi-pgsql
 Provides: multiflexi-database
 Pre-Depends: multiflexi-migrations
-Depends: ${misc:Depends}, dbconfig-pgsql, php-pgsql, php-robmorgan-phinx|php-cakephp-phinx, php-vitexsoftware-ease-fluentpdo
+Depends: ${misc:Depends}, dbconfig-pgsql, php-pgsql, php-cakephp-phinx, php-vitexsoftware-ease-fluentpdo
 Breaks: multiflexi-sqlite (<< ${source:Version}), multiflexi-mysql (<< ${source:Version})
 Architecture: all
 Description: postgresql support for multiabraflexi setup

@@ -25,7 +25,8 @@
         "ergebnis/composer-normalize": "^2.47",
         "ergebnis/php-cs-fixer-config": "^6.54",
         "phpstan/phpstan-phpunit": "2.0.x-dev",
-        "rector/rector": "dev-main"
+        "rector/rector": "dev-main",
+        "phpunit/phpunit": "^13.3@dev"
     },
     "bin": [
         "bin/migrator"

@@ -1,4 +1,5 @@
 db/migrations/*                /usr/lib/multiflexi-database/migrations/
+db/seeds/*                     /usr/lib/multiflexi-database/seeds/
 debian/conf/phinx-adapter.php  /usr/lib/multiflexi-database/
 debian/tmp/composer.json       /usr/lib/multiflexi-database/
 bin/multiflexi-migrator        /usr/bin/
