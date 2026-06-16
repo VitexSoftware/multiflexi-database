@@ -116,7 +116,7 @@ distributions.each { distro ->
                         def debconf_debug = 0 //Set to "5" or "developer" to debug debconf
                         sh 'cd $WORKSPACE/dist/debian/ ; dpkg-scanpackages . /dev/null > Packages; gzip -9c Packages > Packages.gz; cd $WORKSPACE'
                         sh 'echo "deb [trusted=yes] file://///$WORKSPACE/dist/debian/ ./" | sudo tee /etc/apt/sources.list.d/local.list'
-                        sh 'sudo apt-get update --allow-releaseinfo-change'
+                        sh 'sudo apt-get -o APT::Sandbox::User=root update --allow-releaseinfo-change'
                         sh 'echo "INSTALATION"'
 
                         def installOrder = [
