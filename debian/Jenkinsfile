@@ -43,18 +43,21 @@ distributions.each { distro ->
         def dist = distroName.split(':')
         def distroFamily = dist[0]
         def distroCode = dist[1]
+        def buildImage = ''
         def artifacts = []
         def buildVer = ''
 
-        node('vitex-' + distroCode) {
+        node {
             ansiColor('xterm') {
                 stage('Checkout ' + distroName) {
                     sh 'sudo chown -R jenkins:jenkins . 2>/dev/null || true'
                     checkout scm
+                    buildImage = docker.image(vendor + '/' + distro)
                 }
                 stage('Build ' + distroName) {
-                    // Git operations run inside the container to avoid index.lock conflicts
-                    // when multiple parallel branches share the same Jenkins agent node.
+                    buildImage.inside {
+                        // Git operations run inside the container to avoid index.lock conflicts
+                        // when multiple parallel branches share the same Jenkins agent node.
                         sh 'git checkout debian/changelog'
                         def version = sh(
                             script: 'dpkg-parsechangelog --show-field Version',
@@ -92,10 +95,12 @@ distributions.each { distro ->
                             script: "cat debian/files | awk '{print \$1}'",
                             returnStdout: true
                         ).trim().split('\n')
+                    }
                 }
 
                 stage('Test ' + distroName) {
-                    def debconf_debug = 0 //Set to "5" or "developer" to debug debconf
+                    buildImage.inside {
+                        def debconf_debug = 0 //Set to "5" or "developer" to debug debconf
                         sh 'cd $WORKSPACE/dist/debian/ ; dpkg-scanpackages . /dev/null > Packages; gzip -9c Packages > Packages.gz; cd $WORKSPACE'
                         sh 'echo "deb [trusted=yes] file://///$WORKSPACE/dist/debian/ ./" | sudo tee /etc/apt/sources.list.d/local.list'
                         sh 'sudo apt-get update --allow-releaseinfo-change'
@@ -141,9 +146,13 @@ distributions.each { distro ->
                             }
                         }
                         sh 'sudo rm -f /etc/apt/sources.list.d/local.list'
+
+                    }
                 }
                 stage('Archive artifacts ' + distroName ) {
-                    // Archive all produced artifacts listed in debian/files
+                    // Only run if previous stages (Build and Test) succeeded
+                    buildImage.inside {
+                        // Archive all produced artifacts listed in debian/files
                         artifacts.each { deb_file ->
                             println "Archiving artifact: " + deb_file
                             archiveArtifacts artifacts: 'dist/debian/' + deb_file
@@ -166,6 +175,7 @@ distributions.each { distro ->
                             rm -rf "/tmp/debhelper-build-''' + uniqueBuildId + '''" || true
                             rm -rf "/tmp/build-''' + uniqueBuildId + '''" || true
                         '''
+                    }
                 }
             }
         }
