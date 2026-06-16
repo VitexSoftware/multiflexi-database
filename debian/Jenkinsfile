@@ -47,7 +47,7 @@ distributions.each { distro ->
         def artifacts = []
         def buildVer = ''
 
-        node {
+        node('built-in') {
             ansiColor('xterm') {
                 stage('Checkout ' + distroName) {
                     sh 'sudo chown -R jenkins:jenkins . 2>/dev/null || true'
