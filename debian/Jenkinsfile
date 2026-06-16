@@ -70,6 +70,7 @@ distributions.each { distro ->
                     }
                     stage('Build ' + distroName) {
                         container('build') {
+                        sh 'git config --global --add safe.directory "$WORKSPACE"'
                         sh 'git checkout debian/changelog'
                         def version = sh(
                             script: 'dpkg-parsechangelog --show-field Version',
