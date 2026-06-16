@@ -43,21 +43,34 @@ distributions.each { distro ->
         def dist = distroName.split(':')
         def distroFamily = dist[0]
         def distroCode = dist[1]
-        def buildImage = ''
         def artifacts = []
         def buildVer = ''
 
-        node {
-            ansiColor('xterm') {
-                stage('Checkout ' + distroName) {
-                    sh 'sudo chown -R jenkins:jenkins . 2>/dev/null || true'
-                    checkout scm
-                    buildImage = docker.image(vendor + '/' + distro)
-                }
-                stage('Build ' + distroName) {
-                    buildImage.inside {
-                        // Git operations run inside the container to avoid index.lock conflicts
-                        // when multiple parallel branches share the same Jenkins agent node.
+        podTemplate(
+            containers: [
+                containerTemplate(
+                    name: 'build',
+                    image: vendor + '/' + distro,
+                    command: 'sleep',
+                    args: 'infinity',
+                    resourceRequestCpu: '500m',
+                    resourceLimitCpu: '2',
+                    resourceRequestMemory: '768Mi',
+                    resourceLimitMemory: '3Gi',
+                )
+            ],
+            idleMinutes: 1,
+        ) {
+            node(POD_LABEL) {
+                ansiColor('xterm') {
+                    stage('Checkout ' + distroName) {
+                        container('build') {
+                            checkout scm
+                        }
+                    }
+                    stage('Build ' + distroName) {
+                        container('build') {
+                        sh 'git config --global --add safe.directory "$WORKSPACE"'
                         sh 'git checkout debian/changelog'
                         def version = sh(
                             script: 'dpkg-parsechangelog --show-field Version',
@@ -95,15 +108,15 @@ distributions.each { distro ->
                             script: "cat debian/files | awk '{print \$1}'",
                             returnStdout: true
                         ).trim().split('\n')
+                        }
                     }
-                }
 
-                stage('Test ' + distroName) {
-                    buildImage.inside {
+                    stage('Test ' + distroName) {
+                        container('build') {
                         def debconf_debug = 0 //Set to "5" or "developer" to debug debconf
                         sh 'cd $WORKSPACE/dist/debian/ ; dpkg-scanpackages . /dev/null > Packages; gzip -9c Packages > Packages.gz; cd $WORKSPACE'
                         sh 'echo "deb [trusted=yes] file://///$WORKSPACE/dist/debian/ ./" | sudo tee /etc/apt/sources.list.d/local.list'
-                        sh 'sudo apt-get update --allow-releaseinfo-change'
+                        sh 'sudo apt-get -o APT::Sandbox::User=root update --allow-releaseinfo-change'
                         sh 'echo "INSTALATION"'
 
                         def installOrder = [
@@ -147,11 +160,11 @@ distributions.each { distro ->
                         }
                         sh 'sudo rm -f /etc/apt/sources.list.d/local.list'
 
+                        }
                     }
-                }
-                stage('Archive artifacts ' + distroName ) {
-                    // Only run if previous stages (Build and Test) succeeded
-                    buildImage.inside {
+                    stage('Archive artifacts ' + distroName ) {
+                        // Only run if previous stages (Build and Test) succeeded
+                        container('build') {
                         // Archive all produced artifacts listed in debian/files
                         artifacts.each { deb_file ->
                             println "Archiving artifact: " + deb_file
@@ -181,10 +194,11 @@ distributions.each { distro ->
         }
     }
 }
+}
 
 parallel branches
 
-node {
+node('built-in') {
     stage('Publish to Aptly') {
 	publishDebToAptly()
     }
