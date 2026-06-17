@@ -5,4 +5,4 @@ debian/tmp/composer.json       /usr/lib/multiflexi-database/
 bin/multiflexi-migrator        /usr/bin/
 bin/update-multiflexi-env   /usr/bin/
 multiflexi-migrations.svg	usr/share/icons/hicolor/scalable/apps/
-cz.vitexsoftware.multiflexi_migrations.metainfo.xml	usr/share/metainfo/
+debian/cz.vitexsoftware.multiflexi_migrations.metainfo.xml	usr/share/metainfo/
