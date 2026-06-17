@@ -92,7 +92,6 @@ distributions.each { distro ->
                             script: "cat debian/files | awk '{print \$1}'",
                             returnStdout: true
                         ).trim().split('\n')
-                    }
                 }
 
                 stage('Test ' + distroName) {
@@ -167,7 +166,6 @@ distributions.each { distro ->
                             rm -rf "/tmp/debhelper-build-''' + uniqueBuildId + '''" || true
                             rm -rf "/tmp/build-''' + uniqueBuildId + '''" || true
                         '''
-                    }
                 }
             }
         }
