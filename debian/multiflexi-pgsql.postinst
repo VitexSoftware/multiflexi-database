@@ -43,5 +43,16 @@ dbc_sql_substitutions="yes"
                 echo "Skipping migration due to MULTIFLEXI_NOMIGRATE being set."
             fi
 
+            for svc in multiflexi-scheduler multiflexi-executor multiflexi-eventor; do
+                if dpkg -l ${svc} 2>/dev/null | grep -q '^ii'; then
+                    mkdir -p /etc/systemd/system/${svc}.service.d
+                    cat > /etc/systemd/system/${svc}.service.d/db-pgsql.conf << 'EOF'
+[Unit]
+After=postgresql.service
+Wants=postgresql.service
+EOF
+                fi
+            done
+            systemctl daemon-reload || true
 
 #DEBHELPER#

@@ -54,6 +54,16 @@ dbc_mysql_createdb_encoding="UTF8"
                 echo "Skipping migration due to MULTIFLEXI_NOMIGRATE being set."
             fi
 
-
+            for svc in multiflexi-scheduler multiflexi-executor multiflexi-eventor; do
+                if dpkg -l ${svc} 2>/dev/null | grep -q '^ii'; then
+                    mkdir -p /etc/systemd/system/${svc}.service.d
+                    cat > /etc/systemd/system/${svc}.service.d/db-mysql.conf << 'EOF'
+[Unit]
+After=mariadb.service mysql.service
+Wants=mariadb.service mysql.service
+EOF
+                fi
+            done
+            systemctl daemon-reload || true
 
 #DEBHELPER#
