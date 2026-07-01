@@ -55,28 +55,30 @@ final class JobOutputLines extends AbstractMigration
                     );
 
                     foreach ($rows as $row) {
-                        $inserts = [];
+                        $params = [];
+                        $placeholders = [];
                         $seq = 0;
 
                         if (!empty($row['stdout'])) {
                             foreach (explode("\n", stripslashes((string) $row['stdout'])) as $line) {
-                                $safe = str_replace("'", "''", $line);
-                                $inserts[] = "({$row['id']}, {$seq}, 'stdout', '{$safe}')";
+                                $placeholders[] = '(?, ?, ?, ?)';
+                                array_push($params, $row['id'], $seq, 'stdout', $this->toValidUtf8($line));
                                 ++$seq;
                             }
                         }
 
                         if (!empty($row['stderr'])) {
                             foreach (explode("\n", stripslashes((string) $row['stderr'])) as $line) {
-                                $safe = str_replace("'", "''", $line);
-                                $inserts[] = "({$row['id']}, {$seq}, 'stderr', '{$safe}')";
+                                $placeholders[] = '(?, ?, ?, ?)';
+                                array_push($params, $row['id'], $seq, 'stderr', $this->toValidUtf8($line));
                                 ++$seq;
                             }
                         }
 
-                        if ($inserts) {
+                        if ($placeholders) {
                             $this->execute(
-                                'INSERT INTO job_output_lines (job_id, seq, type, line) VALUES '.implode(',', $inserts),
+                                'INSERT INTO job_output_lines (job_id, seq, type, line) VALUES '.implode(',', $placeholders),
+                                $params,
                             );
                         }
                     }
@@ -91,6 +93,23 @@ final class JobOutputLines extends AbstractMigration
                     ->save();
             }
         }
+    }
+
+    /**
+     * Historic job stdout/stderr blobs may contain bytes in legacy
+     * (non-UTF-8) encodings. The new `line` column is utf8mb4, which
+     * rejects invalid byte sequences, so strip anything that doesn't
+     * decode cleanly rather than aborting the migration.
+     */
+    private function toValidUtf8(string $value): string
+    {
+        if (mb_check_encoding($value, 'UTF-8')) {
+            return $value;
+        }
+
+        $fixed = @iconv('UTF-8', 'UTF-8//IGNORE', $value);
+
+        return false !== $fixed ? $fixed : '';
     }
 
     public function down(): void
