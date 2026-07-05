@@ -8,6 +8,11 @@ multiflexi-database (2.5.5) UNRELEASED; urgency=medium
     replaces PLACEHOLDER_KEY_TO_BE_REPLACED with a real AES-256 key encrypted
     by ENCRYPTION_MASTER_KEY; idempotent – never overwrites a real key
   * Call EncryptionKeysSeeder from postinst after multiflexi-migrator
+  * Pin Pre-Depends on multiflexi-migrations to (= ${binary:Version}) for
+    multiflexi-mysql/-sqlite/-pgsql, so dpkg always unpacks+configures the
+    matching migrations package before running phinx migrate; previously an
+    unversioned Pre-Depends was satisfied by an already-installed older
+    multiflexi-migrations, letting migrate run against stale migration files
 
  -- vitex <info@vitexsoftware.cz>  Sun, 15 Jun 2026 22:00:00 +0200
 

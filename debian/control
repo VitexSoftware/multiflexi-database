@@ -19,7 +19,7 @@ Description: Database migrations for MultiFlexi
 
 Package: multiflexi-sqlite
 Provides: multiflexi-database
-Pre-Depends: multiflexi-migrations
+Pre-Depends: multiflexi-migrations (= ${binary:Version})
 Depends: ${misc:Depends}, dbconfig-sqlite3, php-sqlite3, sqlite3, php-vitexsoftware-ease-fluentpdo
 Breaks: multiflexi-mysql (<< ${source:Version}), multiflexi-pgsql (<< ${source:Version})
 Architecture: all
@@ -31,7 +31,7 @@ Description: sqlite support for multiabraflexi setup
 
 Package: multiflexi-mysql
 Provides: multiflexi-database
-Pre-Depends: multiflexi-migrations
+Pre-Depends: multiflexi-migrations (= ${binary:Version})
 Depends: ${misc:Depends}, dbconfig-mysql, php-mysql, php-cakephp-phinx, php-vitexsoftware-ease-fluentpdo
 Breaks: multiflexi-sqlite (<< ${source:Version}), multiflexi-pgsql (<< ${source:Version})
 Suggests: mariadb-server
@@ -44,7 +44,7 @@ Description: mariadb support for multiabraflexi setup
 
 Package: multiflexi-pgsql
 Provides: multiflexi-database
-Pre-Depends: multiflexi-migrations
+Pre-Depends: multiflexi-migrations (= ${binary:Version})
 Depends: ${misc:Depends}, dbconfig-pgsql, php-pgsql, php-cakephp-phinx, php-vitexsoftware-ease-fluentpdo
 Breaks: multiflexi-sqlite (<< ${source:Version}), multiflexi-mysql (<< ${source:Version})
 Architecture: all
