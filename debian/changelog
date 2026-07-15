@@ -1,4 +1,4 @@
-multiflexi-database (2.5.6) UNRELEASED; urgency=medium
+multiflexi-database (2.5.7) UNRELEASED; urgency=medium
 
   [ vitex ]
   * Add task table (scheduling window with state machine)
@@ -21,8 +21,14 @@ multiflexi-database (2.5.6) UNRELEASED; urgency=medium
     migration, so fresh/production environments were missing them
     despite being relied on by multiflexi-cli user-role:set and the
     API's getUserRoles/setUserRoles endpoints).
+  * Fix CI failure: rbac_user_roles migration used unprefixed index
+    names (idx_user_id, idx_role_id, ...) that collided with pre-
+    existing indexes of the same name on unrelated tables under
+    SQLite/PostgreSQL, which require index names to be unique
+    database/schema-wide (not just per-table like MySQL). Verified
+    against a real SQLite migration run.
 
- -- CyberVitexus <cybervitexus@gmail.com>  Wed, 15 Jul 2026 08:21:08 +0200
+ -- CyberVitexus <cybervitexus@gmail.com>  Wed, 15 Jul 2026 09:01:41 +0200
 
 multiflexi-database (2.5.4) UNRELEASED; urgency=medium
 

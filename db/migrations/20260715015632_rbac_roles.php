@@ -30,6 +30,13 @@ use Phinx\Migration\AbstractMigration;
  * 20241020190000_gdpr_phase3_security_enhancements.php), which appear
  * unused (0 assignments) - left untouched pending a separate deprecation
  * decision.
+ *
+ * Index names are prefixed with the table name (idx_rbac_user_roles_user_id,
+ * not idx_user_id) even though the original hand-created MySQL table used
+ * the short form: SQLite and PostgreSQL both require index names to be
+ * unique across the whole database/schema, not just per table, and this
+ * database already has an unrelated idx_user_id on user_data_audit -
+ * verified against a real SQLite run, not just reasoned about.
  */
 final class RbacRoles extends AbstractMigration
 {
@@ -47,9 +54,9 @@ final class RbacRoles extends AbstractMigration
                 ->addColumn('is_active', 'boolean', ['default' => true, 'null' => false])
                 ->addColumn('created_at', 'timestamp', ['default' => 'CURRENT_TIMESTAMP'])
                 ->addColumn('updated_at', 'timestamp', ['default' => 'CURRENT_TIMESTAMP', 'update' => 'CURRENT_TIMESTAMP'])
-                ->addIndex(['name'], ['unique' => true, 'name' => 'unique_name'])
-                ->addIndex(['is_active'], ['name' => 'idx_active'])
-                ->addIndex(['is_system'], ['name' => 'idx_system'])
+                ->addIndex(['name'], ['unique' => true, 'name' => 'unique_rbac_roles_name'])
+                ->addIndex(['is_active'], ['name' => 'idx_rbac_roles_active'])
+                ->addIndex(['is_system'], ['name' => 'idx_rbac_roles_system'])
                 ->create();
         }
 
@@ -60,11 +67,11 @@ final class RbacRoles extends AbstractMigration
                 ->addColumn('assigned_by', 'integer', array_merge(['null' => true], $unsigned))
                 ->addColumn('assigned_at', 'timestamp', ['default' => 'CURRENT_TIMESTAMP'])
                 ->addColumn('expires_at', 'timestamp', ['null' => true, 'default' => null])
-                ->addIndex(['user_id', 'role_id'], ['unique' => true, 'name' => 'unique_user_role'])
-                ->addIndex(['user_id'], ['name' => 'idx_user_id'])
-                ->addIndex(['role_id'], ['name' => 'idx_role_id'])
-                ->addIndex(['assigned_by'], ['name' => 'idx_assigned_by'])
-                ->addIndex(['expires_at'], ['name' => 'idx_expires_at'])
+                ->addIndex(['user_id', 'role_id'], ['unique' => true, 'name' => 'unique_rbac_user_roles_user_role'])
+                ->addIndex(['user_id'], ['name' => 'idx_rbac_user_roles_user_id'])
+                ->addIndex(['role_id'], ['name' => 'idx_rbac_user_roles_role_id'])
+                ->addIndex(['assigned_by'], ['name' => 'idx_rbac_user_roles_assigned_by'])
+                ->addIndex(['expires_at'], ['name' => 'idx_rbac_user_roles_expires_at'])
                 ->addForeignKey('role_id', 'rbac_roles', 'id', ['constraint' => 'rbac_user_roles_ibfk_1', 'delete' => 'CASCADE'])
                 ->create();
         }
