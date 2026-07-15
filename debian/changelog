@@ -1,5 +1,6 @@
-multiflexi-database (2.5.5) UNRELEASED; urgency=medium
+multiflexi-database (2.5.6) UNRELEASED; urgency=medium
 
+  [ vitex ]
   * Add task table (scheduling window with state machine)
   * Add task_id column to job table
   * Add retry/SLA config columns to runtemplate table
@@ -14,7 +15,14 @@ multiflexi-database (2.5.5) UNRELEASED; urgency=medium
     unversioned Pre-Depends was satisfied by an already-installed older
     multiflexi-migrations, letting migrate run against stale migration files
 
- -- vitex <info@vitexsoftware.cz>  Sun, 15 Jun 2026 22:00:00 +0200
+  [ CyberVitexus ]
+  * Formalize rbac_roles/rbac_user_roles tables as a migration
+    (previously created directly against dev DBs with no committed
+    migration, so fresh/production environments were missing them
+    despite being relied on by multiflexi-cli user-role:set and the
+    API's getUserRoles/setUserRoles endpoints).
+
+ -- CyberVitexus <cybervitexus@gmail.com>  Wed, 15 Jul 2026 08:21:08 +0200
 
 multiflexi-database (2.5.4) UNRELEASED; urgency=medium
 
