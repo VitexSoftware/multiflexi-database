@@ -46,8 +46,9 @@ final class RbacRoles extends AbstractMigration
         $unsigned = ($databaseType === 'mysql') ? ['signed' => false] : [];
 
         if (!$this->hasTable('rbac_roles')) {
-            $roles = $this->table('rbac_roles', ['comment' => 'RBAC role definitions']);
-            $roles->addColumn('name', 'string', ['limit' => 50, 'null' => false])
+            $roles = $this->table('rbac_roles', ['id' => false, 'primary_key' => ['id'], 'comment' => 'RBAC role definitions']);
+            $roles->addColumn('id', 'integer', array_merge(['null' => false, 'identity' => true, 'comment' => 'Primary key'], $unsigned))
+                ->addColumn('name', 'string', ['limit' => 50, 'null' => false])
                 ->addColumn('display_name', 'string', ['limit' => 100, 'null' => false])
                 ->addColumn('description', 'text', ['null' => true])
                 ->addColumn('is_system', 'boolean', ['default' => false, 'null' => false])
