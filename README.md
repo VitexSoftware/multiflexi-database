@@ -1,5 +1,7 @@
 
 # multiflexi-database
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+![Packaging: deb](https://img.shields.io/badge/packaging-.deb-red?logo=debian&logoColor=white)
 
 provide database configuration and migration for MultiFlexi's [executor](https://github.com/VitexSoftware/multiflexi-executor), [scheduler](https://github.com/VitexSoftware/multiflexi-scheduler), [api](https://github.com/VitexSoftware/multiflexi-server) and [web](https://github.com/VitexSoftware/MultiFlexi).
 
