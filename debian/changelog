@@ -1,4 +1,4 @@
-multiflexi-database (2.5.7) UNRELEASED; urgency=medium
+multiflexi-database (2.5.8) UNRELEASED; urgency=medium
 
   [ vitex ]
   * Add task table (scheduling window with state machine)
