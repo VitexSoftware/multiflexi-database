@@ -1,4 +1,4 @@
-multiflexi-database (2.5.8) UNRELEASED; urgency=medium
+multiflexi-database (2.5.8) unstable; urgency=medium
 
   [ vitex ]
   * Add task table (scheduling window with state machine)
@@ -14,6 +14,19 @@ multiflexi-database (2.5.8) UNRELEASED; urgency=medium
     matching migrations package before running phinx migrate; previously an
     unversioned Pre-Depends was satisfied by an already-installed older
     multiflexi-migrations, letting migrate run against stale migration files
+  * Add job.block_reason/blocked_at columns for credential blocking tracking
+  * Make event_rule.event_source_id nullable (job-chaining rules trigger on
+    job.completed for a run-template, not an event_source)
+  * Keep company_user fix in original migration only: remove follow-up
+    corrective migration and rely on unsigned company_id/user_id in
+    20260606090000_company_user.php
+  * Add non-destructive MySQL follow-up migration for company_user:
+    enforce UNSIGNED on company_id/user_id, add missing FK constraints
+    when absent
+  * Fix MySQL FK compatibility in company_user migration: ensure
+    company_id/user_id use the same signedness as referenced tables
+  * Add company_user table migration for company-level user assignments
+  * event_source and event_rule tables for event-driven job triggering
 
   [ CyberVitexus ]
   * Formalize rbac_roles/rbac_user_roles tables as a migration
@@ -28,52 +41,13 @@ multiflexi-database (2.5.8) UNRELEASED; urgency=medium
     database/schema-wide (not just per-table like MySQL). Verified
     against a real SQLite migration run.
 
- -- CyberVitexus <cybervitexus@gmail.com>  Wed, 15 Jul 2026 09:01:41 +0200
-
-multiflexi-database (2.5.4) UNRELEASED; urgency=medium
-
-  * Keep company_user fix in original migration only:
-    remove follow-up corrective migration and rely on unsigned company_id/user_id
-    in 20260606090000_company_user.php
-
- -- vitex <info@vitexsoftware.cz>  Sat, 06 Jun 2026 13:35:00 +0200
-
-multiflexi-database (2.5.3) UNRELEASED; urgency=medium
-
-  * Add non-destructive MySQL follow-up migration for company_user:
-    - enforce UNSIGNED on company_id/user_id
-    - add missing FK constraints when absent
-
- -- vitex <info@vitexsoftware.cz>  Sat, 06 Jun 2026 13:15:00 +0200
-
-multiflexi-database (2.5.2) UNRELEASED; urgency=medium
-
-  * Fix MySQL FK compatibility in company_user migration:
-    ensure company_id/user_id use the same signedness as referenced tables
-
- -- vitex <info@vitexsoftware.cz>  Sat, 06 Jun 2026 12:55:00 +0200
-
-multiflexi-database (2.5.1) UNRELEASED; urgency=medium
-
-  * Add company_user table migration for company-level user assignments
-
- -- vitex <info@vitexsoftware.cz>  Sat, 06 Jun 2026 12:35:00 +0200
-
-multiflexi-database (2.5.0) UNRELEASED; urgency=medium
-
-  * event_source and event_rule tables for event-driven job triggering
-
- -- vitex <info@vitexsoftware.cz>  Thu, 26 Feb 2026 22:00:00 +0100
-
-multiflexi-database (2.4.1) UNRELEASED; urgency=medium
-
   [ Vítězslav Vitex Dvořák ]
   * Runtemplate Jobs count added
 
   [ vitex ]
   * Fix MySQL database creation before dbconfig-common privilege checks
 
- -- vitex <info@vitexsoftware.cz>  Sun, 01 Feb 2026 19:28:48 +0100
+ -- Vítězslav Dvořák <info@vitexsoftware.cz>  Fri, 14 Aug 2026 12:00:00 +0200
 
 multiflexi-database (2.3.2) noble; urgency=medium
 
