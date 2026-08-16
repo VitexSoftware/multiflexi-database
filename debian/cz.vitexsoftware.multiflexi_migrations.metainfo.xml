@@ -6,9 +6,13 @@
   <project_license>MIT</project_license>
   <name>multiflexi-migrations</name>
   <summary>Database migrations for MultiFlexi</summary>
+  <summary xml:lang="cs">Databázové migrace pro MultiFlexi</summary>
   <description>
     <p>
       Php classes used by the phinx migration system to mange MultiFlexi database structure Mandatory dependencies for use Multi FlexiBee setup with SQLite database Mandatory dependencies for use Multi FlexiBee setup with MySQL/MariaDB database Mandatory dependencies for use Multi FlexiBee setup with PostgreSQL database
+    </p>
+    <p xml:lang="cs">
+      PHP třídy používané migračním systémem phinx pro správu databázové struktury MultiFlexi. Povinné závislosti pro nastavení MultiFlexi s databází SQLite. Povinné závislosti pro nastavení MultiFlexi s databází MySQL/MariaDB. Povinné závislosti pro nastavení MultiFlexi s databází PostgreSQL.
     </p>
   </description>
   <categories>
