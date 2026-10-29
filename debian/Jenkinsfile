@@ -221,7 +221,10 @@ distributions.each { distro ->
                     stage('Build ' + distroName) {
                         // -v mounts the node-local tree into the container; the
                         // shared NFS workspace is not used for building at all.
-                        buildImage.inside('-v ' + t.base + ':' + t.base) {
+                        // The worktree's .git file points into the node-local mirror
+                        // (<mirror>/worktrees/<name>); mount it too so git works
+                        // inside the container.
+                        buildImage.inside('-v ' + t.base + ':' + t.base + ' -v ' + t.mirror + ':' + t.mirror) {
                             dir(t.tree) {
                                 sh 'git checkout debian/changelog'
                                 def version = sh(
