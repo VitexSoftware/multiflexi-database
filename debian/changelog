@@ -1,3 +1,10 @@
+multiflexi-database (2.5.9) unstable; urgency=medium
+
+  * Enable all applications and the companies that have been running jobs;
+    "enabled" defaults to true.
+
+ -- vitex <info@vitexsoftware.cz>  Wed, 25 Nov 2026 02:30:00 +0100
+
 multiflexi-database (2.5.8) unstable; urgency=medium
 
   [ vitex ]
